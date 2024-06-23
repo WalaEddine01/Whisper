@@ -1,33 +1,39 @@
-import { MongoClient } from 'mongodb';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const DB = process.env.DB;
+const PORT = process.env.PORT || 27017;
+const HOST = process.env.HOST || 'localhost';
 
 class DBClient {
-  constructor(port = 27017, host = 'localhost', db = 'files_manager') {
-    const url = `mongodb://${host}:${port}`;
-    this.client = new MongoClient(url, { useUnifiedTopology: true });
-    this.db = null;
+  constructor(port = PORT, host = HOST, dbName = DB) {
+    this.url = `mongodb://${host}:${port}/${dbName}`;
     this.isConnected = false;
 
-    this.client.connect().then(() => {
-      this.db = this.client.db(db);
+    console.log(this.url);
+    this.client = mongoose.connect(this.url)
+    .then(() => {
+      console.log(`Connected to ${dbName} database`);
       this.isConnected = true;
-    }).catch((err) => {
-      console.log("didn't connect", err);
+    })
+    .catch((err) => {
+      console.error('Connection error:', err);
     });
   }
 
   isAlive() {
-    return this.isConnected && this.db !== null;
+    return this.isConnected;
   }
 
   async nbUsers() {
-    const collection = await this.db.collection('users');
-    const count = await collection.countDocuments();
-    return count;
-  }
+    if (!this.isAlive()) {
+      throw new Error('Database is not connected');
+    }
 
-  async nbFiles() {
-    const collection = await this.db.collection('files');
-    const count = await collection.countDocuments();
+    const User = mongoose.model('User', new mongoose.Schema({}, { collection: 'users' }));
+    const count = await User.countDocuments();
     return count;
   }
 }
