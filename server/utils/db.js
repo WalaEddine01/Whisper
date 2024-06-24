@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-
+import { User } from "../models/user";
 dotenv.config();
 
 const DB = process.env.DB;
@@ -32,7 +32,6 @@ class DBClient {
       throw new Error('Database is not connected');
     }
 
-    const User = mongoose.model('User', new mongoose.Schema({}, { collection: 'users' }));
     const count = await User.countDocuments();
     return count;
   }

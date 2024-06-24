@@ -4,7 +4,6 @@ import { stats, status } from '../controllers/AppController';
 
 const router = Router();
 router.get('/status', status);
-
 router.get('/stats', stats);
 
 
