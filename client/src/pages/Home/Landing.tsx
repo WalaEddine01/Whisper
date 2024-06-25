@@ -1,6 +1,7 @@
 import { ContainerMin } from '../../styles/GlobalStyledElements';
 import React from 'react';
 import styled from 'styled-components';
+import useAppStore from '../../Store';
 
 const LandingDiv = styled.div`
   min-height: calc(100vh - var(--navHeight));
@@ -37,6 +38,17 @@ const SVG = styled.svg`
 `;
 
 const Landing = () => {
+  const setUser = useAppStore((state) => state.setUser);
+
+  function handleGetStarted() {
+    setUser({
+      id: 9,
+      name: 'Amr',
+      username: 'Amr',
+      email: 'Amd@gmail.com',
+    });
+  }
+
   return (
     <div>
       <ContainerMin>
@@ -44,7 +56,7 @@ const Landing = () => {
           <div>
             <H2>Secure Conversations, Seamless Connections</H2>
             <P>Experience real time messaging with whisper. </P>
-            <Button>Get Started</Button>
+            <Button onClick={handleGetStarted}>Get Started</Button>
           </div>
           <SVG
             width="699"

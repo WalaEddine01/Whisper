@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
+import useAppStore from '../../Store';
 
 interface UlStyledProps {
   isSmall: boolean; // Define isSmall as an optional boolean prop
@@ -68,6 +69,8 @@ const Links = () => {
     };
   }, []);
 
+  const user = useAppStore((state) => state.user);
+
   return (
     <>
       <MenuButton isSmall={isSmall} onClick={handleClick}>
@@ -102,16 +105,34 @@ const Links = () => {
             About
           </StyledNavLink>
         </li>
-        <li>
-          <StyledNavLink isSmall={isSmall} to={'/signup'}>
-            SignUp
-          </StyledNavLink>
-        </li>
-        <li>
-          <StyledNavLink isSmall={isSmall} to={'/login'}>
-            Login
-          </StyledNavLink>
-        </li>
+        {!user && (
+          <>
+            <li>
+              <StyledNavLink isSmall={isSmall} to={'/signup'}>
+                SignUp
+              </StyledNavLink>
+            </li>
+            <li>
+              <StyledNavLink isSmall={isSmall} to={'/login'}>
+                Login
+              </StyledNavLink>
+            </li>
+          </>
+        )}
+        {user && (
+          <>
+            <li>
+              <StyledNavLink isSmall={isSmall} to={'/messages'}>
+                Messages
+              </StyledNavLink>
+            </li>
+            <li>
+              <StyledNavLink isSmall={isSmall} to={'/logout'}>
+                Logout
+              </StyledNavLink>
+            </li>
+          </>
+        )}
       </UlStyled>
     </>
   );
