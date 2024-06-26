@@ -1,5 +1,5 @@
-import { User } from '../models/user';
 import jwt from 'jsonwebtoken';
+import { User } from '../models/user';
 
 const ErrorHandler = (err) => {
   console.log(err.message, err.code);

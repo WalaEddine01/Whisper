@@ -1,9 +1,8 @@
 import express from 'express';
-import router from './routes/index';
 import { ApolloServer } from 'apollo-server-express';
+import router from './routes/index';
 import { typeDefs } from './api/schemas';
 import { resolvers } from './api/resolvers';
-
 
 const app = express();
 const server = new ApolloServer({
