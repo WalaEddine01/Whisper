@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import useAppStore from '../../Store';
 
 const Image = styled.div`
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   overflow: hidden;
   background-color: green;
   border-radius: 50%;
@@ -14,16 +14,25 @@ const UserDiv = styled.div`
   display: flex;
   align-items: center;
   gap: 16px;
+  background-color: ${(props) => (props.isSmall ? 'tansparent' : '#222222')};
+  color: var(--mainTextColor);
+  height: 64px;
+  padding: 0 16px;
+`;
+
+const Name = styled.h2`
+  font-weight: 600;
 `;
 
 const User = () => {
   const user = useAppStore((state) => state.user);
+  const isSmall = useAppStore((state) => state.isSmall);
   return (
-    <UserDiv>
+    <UserDiv isSmall={isSmall}>
       <Image>
         <img src="" alt="" />
       </Image>
-      <h2>{user.name}</h2>
+      <Name>{user.name}</Name>
     </UserDiv>
   );
 };

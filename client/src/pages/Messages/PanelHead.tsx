@@ -1,3 +1,4 @@
+import BackButton from '../../components/Buttons/BackButton';
 import React from 'react';
 import styled from 'styled-components';
 import useAppStore from '../../Store';
@@ -7,12 +8,13 @@ const Image = styled.div`
   height: 24px;
   border-radius: 50%;
   background-color: green;
+  flex-shrink: 0;
 `;
 
 const UserRow = styled.button`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 `;
 
 const IconsRow = styled.div`
@@ -25,25 +27,68 @@ const IconsRow = styled.div`
 const HeadRow = styled.div`
   display: flex;
   align-items: center;
-  gap: 64px;
+  gap: 32px;
   justify-content: space-between;
+  background-color: #222222;
+  padding: 16px 16px;
+  color: var(--mainTextColor);
+  height: 64px;
+`;
+
+const BackAndUser = styled.div`
+  display: flex;
+  gap: 12px;
+`;
+
+const Text = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+`;
+
+const Type = styled.p`
+  color: var(--mainTextColorLight);
+  font-size: 12px;
+  text-align: left;
 `;
 
 const PanelHead = () => {
   const selectedChat = useAppStore((state) => state.selectedChat);
+  const setSelectedChat = useAppStore((state) => state.setSelectedChat);
   const setSelectedDetails = useAppStore((state) => state.setSelectedDetails);
+  const selectedDetails = useAppStore((state) => state.selectedDetails);
+  const selectedChatsType = useAppStore((state) => state.selectedChatsType);
 
   function handleHeadClick() {
-    setSelectedDetails(selectedChat);
+    let newSelectedDetails = null;
+    if (selectedDetails === null) {
+      newSelectedDetails = selectedChat;
+    }
+    setSelectedDetails(newSelectedDetails);
+  }
+
+  function handleBackClick() {
+    setSelectedChat(null);
+    setSelectedDetails(null);
   }
 
   if (selectedChat) {
     return (
       <HeadRow>
-        <UserRow onClick={() => handleHeadClick()}>
-          <Image />
-          <h1>{selectedChat.name}</h1>
-        </UserRow>
+        <BackAndUser>
+          <BackButton color={'var(--mainTextColor'} onClick={handleBackClick} />
+          <UserRow onClick={() => handleHeadClick()}>
+            <Image />
+            <Text>
+              <h1>{selectedChat.name}</h1>
+              <Type>
+                {selectedChatsType === 'direct'
+                  ? 'Direct Messages'
+                  : 'Group Chat'}
+              </Type>
+            </Text>
+          </UserRow>
+        </BackAndUser>
         <IconsRow>
           <button>
             <svg

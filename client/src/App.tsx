@@ -1,6 +1,11 @@
 import './App.css';
 
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import {
+  RouterProvider,
+  createBrowserRouter,
+  useLocation,
+} from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 import About from './pages/About/About';
 import Home from './pages/Home/Home';
@@ -9,6 +14,7 @@ import Logout from './pages/Logout/Logout';
 import Messages from './pages/Messages/Messages';
 import Root from './pages/Root';
 import Signup from './pages/Signup/Signup';
+import useAppStore from './Store';
 
 const router = createBrowserRouter([
   {

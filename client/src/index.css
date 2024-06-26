@@ -374,3 +374,7 @@ input[type='submit'] {
   cursor: pointer;
 }
 
+#root {
+  min-height: calc(100vh - var(--navHeight));
+}
+

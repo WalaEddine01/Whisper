@@ -3,10 +3,9 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const Input = styled.input`
-  margin-top: 16px;
   width: 100%;
   padding: 8px 16px;
-  border-radius: 4px;
+  height: 40px;
   outline: none;
   color: var(--mainTextColor);
   background-color: var(--mainColor);

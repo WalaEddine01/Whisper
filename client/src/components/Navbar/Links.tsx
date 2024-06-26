@@ -7,6 +7,7 @@ import useAppStore from '../../Store';
 interface UlStyledProps {
   isSmall: boolean; // Define isSmall as an optional boolean prop
   isOpen: boolean; // Define isOpen as an optional boolean prop
+  show: boolean;
 }
 
 interface NavMenuProps {
@@ -22,7 +23,12 @@ const UlStyled = styled.ul<UlStyledProps>`
   padding: ${(props) => (props.isSmall ? '20px 30px' : '')};
   position: ${(props) => (props.isSmall ? 'absolute' : '')};
   left: ${(props) => (props.isSmall ? '0px' : '')};
-  top: ${(props) => (props.isSmall ? 'var(--navHeight)' : '')};
+  top: ${(props) =>
+    props.isSmall
+      ? props.show
+        ? 'var(--navHeight)'
+        : 'var(--navHeight)'
+      : ''};
   flex-direction: ${(props) => (props.isSmall ? 'column' : '')};
   width: ${(props) => (props.isSmall ? '100%' : '')};
 `;
@@ -45,30 +51,14 @@ const MenuButton = styled.button<NavMenuProps>`
   display: ${(props) => (props.isSmall ? 'flex' : 'none')};
 `;
 
-const Links = () => {
-  const [isSmall, setIsSmall] = useState(false);
+const Links = ({ show }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleClick = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleResize = () => {
-    if (window.innerWidth < 768) {
-      setIsSmall(true);
-    } else {
-      setIsSmall(false);
-    }
-  };
-
-  useEffect(() => {
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
+  const isSmall = useAppStore((state) => state.isSmall);
   const user = useAppStore((state) => state.user);
 
   return (
@@ -82,19 +72,19 @@ const Links = () => {
           xmlns="http://www.w3.org/2000/svg">
           <path
             d="M21 7.75H3C2.59 7.75 2.25 7.41 2.25 7C2.25 6.59 2.59 6.25 3 6.25H21C21.41 6.25 21.75 6.59 21.75 7C21.75 7.41 21.41 7.75 21 7.75Z"
-            fill="#171717"
+            fill={'var(--mainTextColor)'}
           />
           <path
             d="M21 12.75H3C2.59 12.75 2.25 12.41 2.25 12C2.25 11.59 2.59 11.25 3 11.25H21C21.41 11.25 21.75 11.59 21.75 12C21.75 12.41 21.41 12.75 21 12.75Z"
-            fill="#171717"
+            fill={'var(--mainTextColor)'}
           />
           <path
             d="M21 17.75H3C2.59 17.75 2.25 17.41 2.25 17C2.25 16.59 2.59 16.25 3 16.25H21C21.41 16.25 21.75 16.59 21.75 17C21.75 17.41 21.41 17.75 21 17.75Z"
-            fill="#171717"
+            fill={'var(--mainTextColor)'}
           />
         </svg>
       </MenuButton>
-      <UlStyled isSmall={isSmall} isOpen={isOpen}>
+      <UlStyled isSmall={isSmall} isOpen={isOpen} show={show}>
         <li>
           <StyledNavLink isSmall={isSmall} to={'/'}>
             Home

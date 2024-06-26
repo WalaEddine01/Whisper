@@ -1,5 +1,6 @@
 :root {
   --navHeight: 80px;
+  --navHeightSmall: 56px;
   --space-md: 32px;
   --space-lg: 80px;
   --blur-md: blur(6px);

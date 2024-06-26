@@ -15,6 +15,7 @@ const H2 = styled.h2`
   font-size: 32px;
   color: var(--mainTextColor);
   font-weight: bold;
+  word-break: break-word;
 `;
 
 const P = styled.p`

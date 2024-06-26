@@ -7,6 +7,10 @@ const H1 = styled.h1`
   text-align: center;
   color: var() --mainText;
   font-weight: bold;
+
+  @media (max-width: 320px) {
+    font-size: 12vw;
+  }
 `;
 
 const Logo = () => {

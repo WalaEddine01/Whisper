@@ -11,30 +11,33 @@ const ToggleDiv = styled.div`
 
 const Button = styled.button`
   flex-grow: 1;
-  background-color: ${(props) => (props.active ? 'white' : 'orange')};
+  background-color: ${(props) =>
+    props.active ? 'var(--secondaryColor)' : 'var(--mainColor)'};
+  border: ${(props) =>
+    props.active ? 'none' : '1px solid var(--secondaryColor)'};
+  color: var(--mainTextColor);
+  height: 40px;
 `;
 
 const ChatsToggle = () => {
-  const selectedChatsType = useAppStore((state) => state.selectedChatsType);
+  const selectedTabType = useAppStore((state) => state.selectedTabType);
 
-  const setSelectedChatsType = useAppStore(
-    (state) => state.setSelectedChatsType,
-  );
+  const setSelectedTabType = useAppStore((state) => state.setSelectedTabType);
 
-  function changeSelectedChats(type) {
-    setSelectedChatsType(type);
+  function changeSelectedTab(type) {
+    setSelectedTabType(type);
   }
 
   return (
     <ToggleDiv>
       <Button
-        onClick={() => changeSelectedChats('direct')}
-        active={selectedChatsType === 'direct'}>
+        onClick={() => changeSelectedTab('direct')}
+        active={selectedTabType === 'direct'}>
         Direct
       </Button>
       <Button
-        onClick={() => changeSelectedChats('groups')}
-        active={selectedChatsType === 'groups'}>
+        onClick={() => changeSelectedTab('groups')}
+        active={selectedTabType === 'groups'}>
         Groups
       </Button>
     </ToggleDiv>
