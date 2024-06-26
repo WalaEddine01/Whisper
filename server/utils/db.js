@@ -1,7 +1,7 @@
 import { MongoClient } from 'mongodb';
 
 class DBClient {
-  constructor(port = 27017, host = 'localhost', db = 'files_manager') {
+  constructor(port = 27017, host = 'localhost', db = 'wisper') {
     const url = `mongodb://${host}:${port}`;
     this.client = new MongoClient(url, { useUnifiedTopology: true });
     this.db = null;

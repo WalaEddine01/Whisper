@@ -10,6 +10,7 @@ router.get('/stats', stats);
 // router.get('/signup', AuthController.signupGet);
 router.post('/signup', AuthController.signupPost);
 // router.get('/login', AuthController.loginGet);
+router.get('/logout', AuthController.logout);
 router.post('/login', AuthController.loginPost);
 
 module.exports = router;

@@ -27,16 +27,16 @@ userSchema.pre('save', async function hashPassword(next) {
   next();
 });
 
-userSchema.static.login = async function login(email, password) {
-  const user = this.findone({ email });
+userSchema.statics.login = async function login(email, password) {
+  const user = await this.findOne({ email });
   if (user) {
-    const isValidPwd = bcrypt.compare(password, user.password);
-    if (isValidPwd) {
+    const isValid = await bcrypt.compare(password, user.password);
+    if (isValid) {
       return user;
     }
-    throw Error('incorrect email');
+    throw Error('incorrect password');
   }
-  throw Error('incorrect password');
+  throw Error('incorrect email');
 };
 
 const User = mongoose.model('User', userSchema);
