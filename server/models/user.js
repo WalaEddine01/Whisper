@@ -25,6 +25,7 @@ const userSchema = new mongoose.Schema({
     type: Boolean, default: false,
   },
   createdAt: { type: Date, default: Date.now },
+  chatRooms: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ChatRoom' }]
 }, { collection: 'users' });
 
 userSchema.pre('save', async function hashPassword(next) {

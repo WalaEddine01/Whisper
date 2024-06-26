@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import { User } from './models/user';
-import { Message } from './models/message';
-import { ChatRoom } from './models/ChatRoom';
+import { User } from './models/user'; // Adjust the import path if necessary
+import { Message } from './models/message'; // Adjust the import path if necessary
+import { ChatRoom } from './models/ChatRoom'; // Adjust the import path if necessary
 
 dotenv.config();
 
@@ -27,13 +27,13 @@ async function insertUser() {
   try {
     const user1 = new User({
       username: 'john_d',
-      email: 'joh@exampl.com',
+      email: 'john@example.com',
       password: 'securepassword123',
     });
 
     const user2 = new User({
       username: 'jane_do',
-      email: 'jane@exampl.com',
+      email: 'jane@example.com',
       password: 'securepassword456',
     });
 
@@ -41,10 +41,10 @@ async function insertUser() {
     const savedUser2 = await user2.save();
     console.log('Users inserted:', savedUser1, savedUser2);
 
-    // Create a chat between the two users
+
     const chat = new ChatRoom({
       type: 'one-to-one',
-      users: [savedUser1, savedUser2],
+      users: [savedUser1._id, savedUser2._id],
     });
 
     const savedChat = await chat.save();
@@ -52,15 +52,15 @@ async function insertUser() {
 
     // Create messages in the chat
     const message1 = new Message({
-      sender: savedUser1,
+      sender: savedUser1._id,
       content: 'Hello Jane!',
-      ChatRoom: savedChat,
+      chatRoom: savedChat._id,
     });
 
     const message2 = new Message({
-      sender: savedUser2,
-      content: 'Hello JONE!',
-      ChatRoom: savedChat,
+      sender: savedUser2._id,
+      content: 'Hello John!',
+      chatRoom: savedChat._id,
     });
 
     const savedMessage1 = await message1.save();

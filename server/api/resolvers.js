@@ -7,11 +7,11 @@ import { ChatRoom } from "../models/ChatRoom";
 const resolvers = {
   Query: {
     users: async () => {
-      const users = await User.find({});
+      const users = await User.find({}).populate('chatRooms');
       return users;
     },
     user: async (_, { id }) => {
-      const user = await User.findById(id);
+      const user = await User.findById(id).populate('chatRooms');
       return user;
     },
     messages: async () => {
@@ -31,6 +31,12 @@ const resolvers = {
       return chatRoom;
     }
   },
+  User: {
+    chatRooms: async (parent) => {
+      const chatRooms = await ChatRoom.find({ users: parent._id });
+      return chatRooms;
+    }
+  },
   Message: {
     sender: async (parent) => {
       const user = await User.findById(parent.sender);
@@ -46,7 +52,7 @@ const resolvers = {
       const users = await User.find({ _id: { $in: parent.users } });
       return users;
     }
-  }
+  },
 };
 
 export { resolvers };

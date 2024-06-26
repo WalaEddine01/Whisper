@@ -7,6 +7,7 @@ export const typeDefs = ` #graphql
     password: String!
     isVerfied: Boolean!
     createdAt: String!
+    chatRooms: [ChatRoom]!
   }
 
     type Message {
@@ -19,12 +20,10 @@ export const typeDefs = ` #graphql
 
     type ChatRoom {
         id: ID!
-        name: String!
         type: String!
         users: [User]!
         createdAt: String!
     }
-
 
     type Query {
         users: [User]
