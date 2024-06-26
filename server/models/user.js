@@ -2,9 +2,14 @@ import mongoose from 'mongoose';
 
 const { isEmail } = require('validator');
 const bcrypt = require('bcrypt');
+const { v4: uuidv4 } = require('uuid');
 
 const userSchema = new mongoose.Schema({
-  username: { type: String, required: false, unique: true },
+  username: {
+    type: String,
+    required: true, // Set to true if you always want a username to be generated
+    default: () => `user_${uuidv4()}`, // Generate a default username combining 'user_' with a UUID
+  },
   email: {
     type: String,
     required: [true, 'Add your email Adress'],
@@ -43,4 +48,4 @@ userSchema.statics.login = async function login(email, password) {
 
 const User = mongoose.model('User', userSchema);
 
-module.exports = User;
+export { User, userSchema };

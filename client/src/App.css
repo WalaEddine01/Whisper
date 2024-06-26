@@ -1,0 +1,9 @@
+body {
+  background-image: url('../public/images/background.png');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  min-height: 100vh; /* Set the height to at least 100vh */
+  padding-top: var(--navHeight);
+}
+

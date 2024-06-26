@@ -1,5 +1,6 @@
+import { User } from '../models/user';
+
 const jwt = require('jsonwebtoken');
-const User = require('../models/user');
 
 const ErrorHandler = (err) => {
   console.log(err.message, err.code);

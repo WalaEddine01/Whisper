@@ -11,7 +11,6 @@ const status = (req, res) => {
 const stats = async (req, res) => {
   res.send({
     users: await dbClient.nbUsers(),
-    files: await dbClient.nbFiles(),
   });
 };
 

@@ -1,0 +1,14 @@
+:root {
+  --navHeight: 80px;
+  --space-md: 32px;
+  --space-lg: 80px;
+  --blur-md: blur(6px);
+  --mainColor: #333333;
+  --inputColor: #555555;
+  --secondaryColor: #7c4656;
+  --errorColor: #fc7373;
+  --mainTextColor: white;
+  --mainTextColorLight: #999;
+  --navBorderSize: 4px;
+}
+
