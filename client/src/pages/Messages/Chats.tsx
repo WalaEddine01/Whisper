@@ -1,6 +1,7 @@
 import ChatsList from './ChatsList';
 import ChatsSearch from './ChatsSearch';
 import ChatsToggle from './ChatsToggle';
+import ModesToggle from './ModesToggle';
 import Navbar from '../../components/Navbar/Navbar';
 import User from './User';
 import styled from 'styled-components';
@@ -17,6 +18,13 @@ const ChatsDiv = styled.div`
   overflow: hidden;
 `;
 
+const Toggles = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  background-color: green;
+`;
+
 const Chats = () => {
   const isSmall = useAppStore((state) => state.isSmall);
 
@@ -25,7 +33,10 @@ const Chats = () => {
       <Navbar show={true} />
       <User />
       <ChatsSearch />
-      <ChatsToggle />
+      <Toggles>
+        <ModesToggle />
+        <ChatsToggle />
+      </Toggles>
       <ChatsList />
     </ChatsDiv>
   );

@@ -59,7 +59,7 @@ const Links = ({ show }) => {
   };
 
   const isSmall = useAppStore((state) => state.isSmall);
-  const user = useAppStore((state) => state.user);
+  const userId = useAppStore((state) => state.userId);
 
   return (
     <>
@@ -95,7 +95,7 @@ const Links = ({ show }) => {
             About
           </StyledNavLink>
         </li>
-        {!user && (
+        {!userId && (
           <>
             <li>
               <StyledNavLink isSmall={isSmall} to={'/signup'}>
@@ -109,7 +109,7 @@ const Links = ({ show }) => {
             </li>
           </>
         )}
-        {user && (
+        {userId && (
           <>
             <li>
               <StyledNavLink isSmall={isSmall} to={'/messages'}>

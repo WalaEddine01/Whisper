@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 import React from 'react';
 import TypingLoader from '../../components/Loaders/TypingLoader';
 import styled from 'styled-components';
@@ -53,15 +55,43 @@ const Typing = styled.div`
 `;
 
 const MessageInput = () => {
+  const selectedChatMode = useAppStore((state) => state.selectedChatMode);
   const isSmall = useAppStore((state) => state.isSmall);
+  const [inputValue, setInputValue] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const typingTimeout = 1000; // Timeout in ms to consider the user stopped typing
+
+  useEffect(() => {
+    if (inputValue) {
+      setIsTyping(true);
+
+      const timer = setTimeout(() => {
+        setIsTyping(false);
+      }, typingTimeout);
+
+      return () => clearTimeout(timer);
+    }
+  }, [inputValue]);
+
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
+  };
+
+  if (selectedChatMode === 'discover') return null;
 
   return (
     <MessageDiv isSmall={isSmall}>
-      <Input type="text" placeholder="Write your message..." />
-      <Typing>
-        <TypingLoader />
-        <TypingP>Amr is typing...</TypingP>
-      </Typing>
+      <Input
+        type="text"
+        placeholder="Write your message..."
+        onChange={handleInputChange}
+      />
+      {isTyping && (
+        <Typing>
+          <TypingLoader />
+          <TypingP>Amr is typing...</TypingP>
+        </Typing>
+      )}
     </MessageDiv>
   );
 };

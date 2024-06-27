@@ -57,7 +57,7 @@ const PanelHead = () => {
   const setSelectedChat = useAppStore((state) => state.setSelectedChat);
   const setSelectedDetails = useAppStore((state) => state.setSelectedDetails);
   const selectedDetails = useAppStore((state) => state.selectedDetails);
-  const selectedChatsType = useAppStore((state) => state.selectedChatsType);
+  const selectedChatType = useAppStore((state) => state.selectedChatType);
 
   function handleHeadClick() {
     let newSelectedDetails = null;
@@ -80,9 +80,9 @@ const PanelHead = () => {
           <UserRow onClick={() => handleHeadClick()}>
             <Image />
             <Text>
-              <h1>{selectedChat.name}</h1>
+              <h1>{selectedChat.user?.name || selectedChat.name}</h1>
               <Type>
-                {selectedChatsType === 'direct'
+                {selectedChatType === 'direct'
                   ? 'Direct Messages'
                   : 'Group Chat'}
               </Type>

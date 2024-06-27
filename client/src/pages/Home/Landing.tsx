@@ -39,15 +39,10 @@ const SVG = styled.svg`
 `;
 
 const Landing = () => {
-  const setUser = useAppStore((state) => state.setUser);
+  const setUserId = useAppStore((state) => state.setUserId);
 
   function handleGetStarted() {
-    setUser({
-      id: 9,
-      name: 'Amr',
-      username: 'Amr',
-      email: 'Amd@gmail.com',
-    });
+    setUserId('j84985');
   }
 
   return (

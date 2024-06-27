@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import useAppStore from '../../Store';
+import { useEffect } from 'react';
 
 const Image = styled.div`
   width: 24px;
@@ -28,18 +29,29 @@ const ChatItem = ({ chat, even, type }) => {
   );
   const setSelectedDetails = useAppStore((state) => state.setSelectedDetails);
   const setSelectedChatType = useAppStore((state) => state.setSelectedChatType);
+  const setSelectedChatMode = useAppStore((state) => state.setSelectedChatMode);
+
+  const selectedChatType = useAppStore((state) => state.selectedChatsType);
 
   function handleChatClick() {
     setSelectedChat(chat);
     setSelectedChatMessages(chat.messages);
     setSelectedDetails(null);
     setSelectedChatType(type);
+    setSelectedChatMode(chat.mode || 'yours');
+
+    console.log(type);
   }
 
+  useEffect(() => {
+    console.log(selectedChatType);
+    console.log(chat);
+  }, [selectedChatType]);
+
   return (
-    <ChatRow onClick={() => handleChatClick(chat)} even={even}>
+    <ChatRow onClick={() => handleChatClick()} even={even}>
       <Image />
-      <div>{chat.name}</div>
+      <div>{chat.user?.name || chat.name}</div>
       <div>{chat.lastMessage}</div>
     </ChatRow>
   );

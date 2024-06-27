@@ -31,12 +31,17 @@ const UserName = styled.p`
 const DetailsBody = () => {
   const selectedDetails = useAppStore((state) => state.selectedDetails);
   const setSelectedDetails = useAppStore((state) => state.setSelectedDetails);
+  const selectedChatType = useAppStore((state) => state.selectedChatType);
 
   return (
     <HeadRow>
       <Image />
-      <p>{selectedDetails.name}</p>
-      <UserName>@{selectedDetails.username}</UserName>
+      <p>{selectedDetails.user?.name || selectedDetails.name}</p>
+      {selectedChatType === 'direct' ? (
+        <UserName>@{selectedDetails.user?.username}</UserName>
+      ) : (
+        <UserName>{selectedDetails.policy}</UserName>
+      )}
     </HeadRow>
   );
 };

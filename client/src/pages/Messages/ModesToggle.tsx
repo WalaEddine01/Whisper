@@ -21,30 +21,30 @@ const Button = styled.button`
   flex-basis: 50%;
 `;
 
-const ChatsToggle = () => {
-  const selectedTabType = useAppStore((state) => state.selectedTabType);
+const ModesToggle = () => {
+  const selectedModeType = useAppStore((state) => state.selectedModeType);
+  const setSelectedModeType = useAppStore((state) => state.setSelectedModeType);
 
-  const setSelectedTabType = useAppStore((state) => state.setSelectedTabType);
-
-  function changeSelectedTab(type) {
-    setSelectedTabType(type);
+  function changeSelectedMode(type) {
+    console.log(type);
+    setSelectedModeType(type);
   }
 
   return (
     <ToggleDiv>
       <Button
-        onClick={() => changeSelectedTab('direct')}
-        active={selectedTabType === 'direct'}>
-        Direct
+        onClick={() => changeSelectedMode('yours')}
+        active={selectedModeType === 'yours'}>
+        Yours
       </Button>
       <Button
-        onClick={() => changeSelectedTab('groups')}
-        active={selectedTabType === 'groups'}>
-        Groups
+        onClick={() => changeSelectedMode('discover')}
+        active={selectedModeType === 'discover'}>
+        Discover
       </Button>
     </ToggleDiv>
   );
 };
 
-export default ChatsToggle;
+export default ModesToggle;
 
