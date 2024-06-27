@@ -1,20 +1,25 @@
 import mongoose from 'mongoose';
-import { isEmail } from 'validator';
+import validator from 'validator';
 import bcrypt from 'bcrypt';
-import { v4 as uuidv4 } from 'uuid';
 
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
-    required: true,
-    default: () => `user_${uuidv4()}`,
+    required: [true, 'You need a username to sign up'],
+    unique: [true, 'This username is already taken'],
+    minlength: [4, 'Your username should be at least 4 letters long'],
+    validate: {
+      validator: function(v) {
+        return validator.isAlphanumeric(v, 'en-US', { ignore: '_-' });
+      },
+      message: 'Usernames must be alphanumeric and can include underscores and hyphens.'
+    }
   },
   email: {
     type: String,
-    required: [true, 'Add your email Adress'],
-    unique: [true, 'This email is already registered'],
-
-    validate: [isEmail, 'Please enter a valid email'],
+    required: [true, 'Add your email address'],
+    unique: true,
+    validate: [validator.isEmail, 'Please enter a valid email'],
   },
   password: {
     type: String,
@@ -34,8 +39,15 @@ userSchema.pre('save', async function hashPassword(next) {
   next();
 });
 
-userSchema.statics.login = async function login(email, password) {
-  const user = await this.findOne({ email });
+userSchema.statics.login = async function login(loginCredential, password) {
+  if (!password) {
+    throw Error('Password must be provided');
+  }
+
+  const isEmail = loginCredential.includes('@');
+  let query = isEmail ? { email: loginCredential } : { username: loginCredential };
+
+  const user = await this.findOne(query);
   if (user) {
     const isValid = await bcrypt.compare(password, user.password);
     if (isValid) {
@@ -43,7 +55,7 @@ userSchema.statics.login = async function login(email, password) {
     }
     throw Error('incorrect password');
   }
-  throw Error('incorrect email');
+  throw Error(isEmail ? 'incorrect email' : 'incorrect username');
 };
 
 const User = mongoose.model('User', userSchema);
