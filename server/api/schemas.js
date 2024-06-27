@@ -1,4 +1,3 @@
-
 export const typeDefs = ` #graphql
     type User {
     id: ID!
@@ -32,5 +31,10 @@ export const typeDefs = ` #graphql
         message(id: ID!): Message
         chatRooms: [ChatRoom]
         chatRoom(id: ID!): ChatRoom
+    }
+    
+    type Mutation {
+        createChatRoom(type: String!, userIds: [ID!]!): ChatRoom
+        createMessage(senderId: ID!, content: String!, chatRoomId: ID!): Message
     }
 `;
