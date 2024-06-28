@@ -1,0 +1,54 @@
+import jwt from 'jsonwebtoken';
+import User from '../models/User';
+
+// the whole point of this middleware function is to check if the user is authenticated or not
+// if the user is authenticated, then we will call the next middleware function
+// if the user is not authenticated, then we will redirect the user to the login page
+// so front end guys use this middleware function to protect the routes that require authentication
+
+const requireAuth = (request, response, next) => {
+  const token = request.cookies.jwt;
+
+  if (token) {
+    jwt.verify(token, 'a screte to change latter', (err, decodedToken) => {
+      if (err) {
+        console.log(err.message); // this is for debugging purposes
+        response.redirect('/login'); // if the token is invalid, then redirect the user to the login page
+      } else {
+        console.log(decodedToken); // this is for debugging purposes
+        next();
+      }
+    });
+  } else {
+    response.redirect('/login');
+  }
+};
+
+// this middleware function is used to check if the user is authenticated or not
+// but the difference between this middleware function and the requireAuth middleware function is that
+// this middleware function does not redirect the user to the login page if the user is not authenticated
+// instead it just sets the user property on the response.locals object to the user object if the user is authenticated
+// so to get user in front end, you can use response.locals.user
+// if the user is not authenticated, then response.locals.user will be null
+
+const checkUser = (request, response, next) => {
+    const token = request.cookies.jwt;
+    if (token) {
+        jwt.verify(token, 'a screte to change latter', async (err, decodedToken) => {
+            if (err) {
+                response.locals.user = null;
+                next();
+            } else {
+                let user = await User.findById(decodedToken.id);
+                response.locals.user = user;
+                next();
+            }
+        });
+    } else {
+        response.locals.user = null;
+        next();
+    }
+};
+
+
+module.exports = { requireAuth, checkUser };
