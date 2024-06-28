@@ -30,8 +30,9 @@ const ChatItem = ({ chat, even, type }) => {
   const setSelectedDetails = useAppStore((state) => state.setSelectedDetails);
   const setSelectedChatType = useAppStore((state) => state.setSelectedChatType);
   const setSelectedChatMode = useAppStore((state) => state.setSelectedChatMode);
-
+  const setManagementMode = useAppStore((state) => state.setManagementMode);
   const selectedChatType = useAppStore((state) => state.selectedChatsType);
+  const setManagementAction = useAppStore((state) => state.setManagementAction);
 
   function handleChatClick() {
     setSelectedChat(chat);
@@ -39,7 +40,8 @@ const ChatItem = ({ chat, even, type }) => {
     setSelectedDetails(null);
     setSelectedChatType(type);
     setSelectedChatMode(chat.mode || 'yours');
-
+    setManagementMode(null);
+    setManagementAction(null);
     console.log(type);
   }
 

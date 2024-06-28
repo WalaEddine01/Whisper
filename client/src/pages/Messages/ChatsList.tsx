@@ -17,13 +17,15 @@ const P = styled.p`
 `;
 
 const ChatsItems = styled.div`
-  height: calc(100% - 184px);
+  /* height: calc(100% - 184px); */
+  height: calc(100% - 224px);
+
   padding: 32px 0;
   color: var(--mainTextColor);
   overflow: auto;
 `;
 
-const ChatsList = () => {
+const ChatsList = ({ searchQuery }) => {
   const selectedTabType = useAppStore((state) => state.selectedTabType);
   const selectedModeType = useAppStore((state) => state.selectedModeType);
   // const directedChats = useAppStore((state) => state.directChats);
@@ -44,15 +46,46 @@ const ChatsList = () => {
     (group) => !groupChatsUserIds.includes(group.id),
   );
 
+  const filteredDiscoveredUsers = discoveringUsers.filter((discoveredUser) => {
+    const lowercasedQuery = searchQuery?.toLowerCase() || '';
+    console.log(discoveredUser);
+    return (
+      discoveredUser.name.toLowerCase().includes(lowercasedQuery) ||
+      discoveredUser.username.toLowerCase().includes(lowercasedQuery)
+    );
+  });
+
+  const filteredDirectUsers = user.directChats.filter((directUser) => {
+    const lowercasedQuery = searchQuery?.toLowerCase() || '';
+    console.log(directUser);
+    return (
+      directUser.user.name.toLowerCase().includes(lowercasedQuery) ||
+      directUser.user.username.toLowerCase().includes(lowercasedQuery)
+    );
+  });
+
+  const filteredDiscoveredGroups = discoveringGroups.filter(
+    (discoveredGroup) => {
+      const lowercasedQuery = searchQuery?.toLowerCase() || '';
+      return discoveredGroup.name.toLowerCase().includes(lowercasedQuery);
+    },
+  );
+
+  const filteredGroupChats = user.groupChats.filter((group) => {
+    const lowercasedQuery = searchQuery?.toLowerCase() || '';
+    return group.name.toLowerCase().includes(lowercasedQuery);
+  });
+
   useEffect(() => {
     console.log(store);
+    console.log(discoveringGroups);
   }, [selectedTabType, selectedModeType]);
 
   if (selectedTabType === 'direct' && selectedModeType === 'discover') {
     return (
       <ChatsItems>
         <ChatsListStyled>
-          {discoveringUsers.map((user, index) => {
+          {filteredDiscoveredUsers.map((user, index) => {
             return (
               <ChatItem
                 key={user.id}
@@ -71,7 +104,7 @@ const ChatsList = () => {
     return (
       <ChatsItems>
         <ChatsListStyled>
-          {user.directChats.map((chat, index) => {
+          {filteredDirectUsers.map((chat, index) => {
             return (
               <ChatItem
                 key={chat.id}
@@ -90,7 +123,7 @@ const ChatsList = () => {
     return (
       <ChatsItems>
         <ChatsListStyled>
-          {discoveringGroups.map((chat, index) => {
+          {filteredDiscoveredGroups.map((chat, index) => {
             return (
               <ChatItem
                 key={user.id}
@@ -109,11 +142,11 @@ const ChatsList = () => {
     return (
       <ChatsItems>
         <ChatsListStyled>
-          {user.groupChats.map((chat, index) => {
+          {filteredGroupChats.map((chat, index) => {
             return (
               <ChatItem
-                key={user.id}
-                chat={{ ...chat }}
+                key={chat.id}
+                chat={chat}
                 even={index % 2}
                 type={'group'}
               />

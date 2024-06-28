@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import React from 'react';
 import TypingLoader from '../../components/Loaders/TypingLoader';
+import { arrayToHashMap } from '../../utils/utils';
 import styled from 'styled-components';
 import useAppStore from '../../Store';
 
@@ -56,10 +57,41 @@ const Typing = styled.div`
 
 const MessageInput = () => {
   const selectedChatMode = useAppStore((state) => state.selectedChatMode);
+  const selectedChat = useAppStore((state) => state.selectedChat);
   const isSmall = useAppStore((state) => state.isSmall);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const typingTimeout = 1000; // Timeout in ms to consider the user stopped typing
+  const userId = useAppStore((state) => state.userId);
+  const users = useAppStore((state) => state.users);
+  const user = arrayToHashMap(users, 'id')[userId];
+  const directChat = arrayToHashMap(user.directChats, 'id')[selectedChat.id];
+  const setSelectedChatMessages = useAppStore(
+    (state) => state.setSelectedChatMessages,
+  );
+  const addMessageToDirectChat = useAppStore(
+    (state) => state.addMessageToDirectChat,
+  );
+  const addMessageToGroupChat = useAppStore(
+    (state) => state.addMessageToGroupChat,
+  );
+  const selectedChatType = useAppStore((state) => state.selectedChatType);
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const message = {
+      userId: userId,
+      id: Math.random().toString(),
+      text: inputValue,
+      time: Date.now(),
+      type: 'text',
+    };
+    if (selectedChatType === 'direct') {
+      addMessageToDirectChat(userId, selectedChat.id, message);
+    } else if (selectedChatType === 'group') {
+      addMessageToGroupChat(userId, selectedChat.id, message);
+    }
+  }
 
   useEffect(() => {
     if (inputValue) {
@@ -77,22 +109,36 @@ const MessageInput = () => {
     setInputValue(e.target.value);
   };
 
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault(); // Prevents the default action (e.g., newline in textarea)
+      console.log('aho');
+      setInputValue('');
+      setIsTyping(false);
+      handleSubmit(event);
+    }
+  };
+
   if (selectedChatMode === 'discover') return null;
 
   return (
-    <MessageDiv isSmall={isSmall}>
-      <Input
-        type="text"
-        placeholder="Write your message..."
-        onChange={handleInputChange}
-      />
-      {isTyping && (
-        <Typing>
-          <TypingLoader />
-          <TypingP>Amr is typing...</TypingP>
-        </Typing>
-      )}
-    </MessageDiv>
+    <form action="" onSubmit={handleSubmit}>
+      <MessageDiv isSmall={isSmall}>
+        <Input
+          type="text"
+          placeholder="Write your message..."
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
+          value={inputValue}
+        />
+        {isTyping && (
+          <Typing>
+            <TypingLoader />
+            <TypingP>Amr is typing...</TypingP>
+          </Typing>
+        )}
+      </MessageDiv>
+    </form>
   );
 };
 

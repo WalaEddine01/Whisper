@@ -26,6 +26,7 @@ const ModesToggle = () => {
   const setSelectedModeType = useAppStore((state) => state.setSelectedModeType);
 
   function changeSelectedMode(type) {
+    if (type === selectedModeType) return;
     console.log(type);
     setSelectedModeType(type);
   }

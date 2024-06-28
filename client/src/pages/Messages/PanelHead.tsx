@@ -58,6 +58,11 @@ const PanelHead = () => {
   const setSelectedDetails = useAppStore((state) => state.setSelectedDetails);
   const selectedDetails = useAppStore((state) => state.selectedDetails);
   const selectedChatType = useAppStore((state) => state.selectedChatType);
+  const managementMode = useAppStore((state) => state.managementMode);
+  const managementAction = useAppStore((state) => state.managementAction);
+  const setManagementMode = useAppStore((state) => state.setManagementMode);
+  const setManagementAction = useAppStore((state) => state.setManagementAction);
+  const selectedTabType = useAppStore((state) => state.selectedTabType);
 
   function handleHeadClick() {
     let newSelectedDetails = null;
@@ -70,6 +75,52 @@ const PanelHead = () => {
   function handleBackClick() {
     setSelectedChat(null);
     setSelectedDetails(null);
+  }
+
+  function handleBackManageClick() {
+    setManagementMode(null);
+  }
+
+  function handleBackToManageClick() {
+    setManagementAction(null);
+  }
+
+  if (managementAction) {
+    return (
+      <HeadRow>
+        <BackAndUser>
+          <BackButton
+            color={'var(--mainTextColor)'}
+            onClick={handleBackToManageClick}
+          />
+          <Text>
+            <h1>{managementAction === 'addGroup' && 'Create A New Group'}</h1>
+            <h1>
+              {managementAction === 'addToGroup' && 'Add Users To Your Groups'}
+            </h1>
+          </Text>
+        </BackAndUser>
+      </HeadRow>
+    );
+  }
+
+  if (managementMode) {
+    return (
+      <HeadRow>
+        <BackAndUser>
+          <BackButton
+            color={'var(--mainTextColor'}
+            onClick={handleBackManageClick}
+          />
+          <Text>
+            <h1>
+              Manage Your{' '}
+              {selectedTabType === 'direct' ? 'Direct Chats' : 'Groups'}
+            </h1>
+          </Text>
+        </BackAndUser>
+      </HeadRow>
+    );
   }
 
   if (selectedChat) {

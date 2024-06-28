@@ -104,7 +104,7 @@ const createUsersSlice = (set, get) => ({
       groupChats: [
         {
           name: 'eFootball',
-          id: 2,
+          id: 20,
           policy: 'public',
           users: [
             {
@@ -160,7 +160,7 @@ const createUsersSlice = (set, get) => ({
   publicGroups: [
     {
       name: 'FIFA',
-      id: 1,
+      id: 100,
       users: [
         {
           id: 10,
@@ -206,6 +206,51 @@ const createUsersSlice = (set, get) => ({
         },
       ],
     },
+    {
+      name: 'eFootball',
+      id: 20,
+      policy: 'public',
+      users: [
+        {
+          id: 1,
+          name: 'Ahmed',
+        },
+        {
+          id: 'j84985',
+          name: 'Amr',
+        },
+      ],
+      messages: [
+        {
+          userId: 5,
+          id: 1,
+          text: 'Hey!',
+          time: '08:00',
+          type: 'text',
+        },
+        {
+          userId: 'j84985',
+          id: 2,
+          text: "Hi Michael, how's it going?",
+          time: '08:01',
+          type: 'text',
+        },
+        {
+          userId: 5,
+          id: 3,
+          text: "I'm doing well, thanks!",
+          time: '08:02',
+          type: 'text',
+        },
+        {
+          userId: 'j84985',
+          id: 4,
+          text: 'Glad to hear that!',
+          time: '08:03',
+          type: 'text',
+        },
+      ],
+    },
   ],
 
   addToDirectChats: (userId, chat) =>
@@ -225,15 +270,6 @@ const createUsersSlice = (set, get) => ({
       return { users };
     }),
 
-  // addToDirectChats: (userId, chat) =>
-  //   set((state) => ({
-  //     users: state.users.map((user) =>
-  //       user.id === userId
-  //         ? { ...user, directChats: [...user.directChats, chat] }
-  //         : user,
-  //     ),
-  //   })),
-
   addToGroupChats: (userId, chat) =>
     set((state) => {
       const users = state.users.map((user) => {
@@ -247,6 +283,100 @@ const createUsersSlice = (set, get) => ({
       });
       return { users };
     }),
+
+  addMessageToDirectChat: (userId, chatId, message) =>
+    set((state) => {
+      const users = state.users.map((user) => {
+        if (user.id === userId) {
+          return {
+            ...user,
+            directChats: user.directChats.map((chat) => {
+              if (chat.id === chatId) {
+                return {
+                  ...chat,
+                  messages: [...chat.messages, message],
+                };
+              }
+              return chat;
+            }),
+          };
+        }
+        return user;
+      });
+      const selectedChat = state.selectedChat;
+
+      if (selectedChat.id === chatId) {
+        state.selectedChatMessages = [...state.selectedChatMessages, message];
+      }
+
+      return { users };
+    }),
+
+  addMessageToGroupChat: (userId, chatId, message) =>
+    set((state) => {
+      const users = state.users.map((user) => {
+        if (user.id === userId) {
+          return {
+            ...user,
+            groupChats: user.groupChats.map((chat) => {
+              if (chat.id === chatId) {
+                return {
+                  ...chat,
+                  messages: [...chat.messages, message],
+                };
+              }
+              return chat;
+            }),
+          };
+        }
+        return user;
+      });
+      const selectedChat = state.selectedChat;
+
+      if (selectedChat.id === chatId) {
+        state.selectedChatMessages = [...state.selectedChatMessages, message];
+      }
+
+      return { users };
+    }),
+
+  addUserToGroupChat: (userId, chatId, user) => {
+    const users = state.users.map((user) => {
+      if (user.id === userId) {
+        return {
+          ...user,
+          groupChats: user.groupChats.map((chat) => {
+            if (chat.id === chatId) {
+              return {
+                ...chat,
+                users: [...chat.users, user],
+              };
+            }
+            return chat;
+          }),
+        };
+      }
+      return user;
+    });
+
+    return { users };
+  },
+
+  createNewGroup: (userId, group) => {
+    set((state) => {
+      const users = state.users.map((user) => {
+        if (user.id === userId) {
+          return {
+            ...user,
+            groupChats: [...user.groupChats, group],
+          };
+        }
+        return user;
+      });
+
+      return { users };
+    });
+  },
 });
 
 export default createUsersSlice;

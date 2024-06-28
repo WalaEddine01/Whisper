@@ -15,11 +15,10 @@ const Input = styled.input`
   }
 `;
 
-const ChatsSearch = () => {
-  const [searchValue, setSearchValue] = useState('');
-
+const ChatsSearch = ({ searchQuery, setSearchQuery }) => {
   function handleSerachChange(e) {
-    setSearchValue(e.target.value);
+    console.log(setSearchQuery);
+    setSearchQuery(e.target.value);
   }
 
   return (
@@ -27,7 +26,7 @@ const ChatsSearch = () => {
       placeholder="Search..."
       type="search"
       onChange={(e) => handleSerachChange(e)}
-      value={searchValue}
+      value={searchQuery}
     />
   );
 };

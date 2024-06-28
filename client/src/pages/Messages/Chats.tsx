@@ -1,11 +1,13 @@
 import ChatsList from './ChatsList';
 import ChatsSearch from './ChatsSearch';
 import ChatsToggle from './ChatsToggle';
+import Manage from './Manage';
 import ModesToggle from './ModesToggle';
 import Navbar from '../../components/Navbar/Navbar';
 import User from './User';
 import styled from 'styled-components';
 import useAppStore from '../../Store';
+import { useState } from 'react';
 
 const ChatsDiv = styled.div`
   padding: 0;
@@ -27,17 +29,19 @@ const Toggles = styled.div`
 
 const Chats = () => {
   const isSmall = useAppStore((state) => state.isSmall);
+  const [searchQuery, setSearchQuery] = useState('');
 
   return (
     <ChatsDiv isSmall={isSmall}>
       <Navbar show={true} />
       <User />
-      <ChatsSearch />
+      <ChatsSearch searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       <Toggles>
         <ModesToggle />
         <ChatsToggle />
       </Toggles>
-      <ChatsList />
+      <ChatsList searchQuery={searchQuery} />
+      <Manage />
     </ChatsDiv>
   );
 };
