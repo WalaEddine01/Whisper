@@ -7,11 +7,11 @@ const cors = require('cors');
 
 const app = express();
 app.use(
-  // cors({
-  //   origin: 'http://localhost:8000',
-  //   credentials: true,
-  // }),
-  cors(),
+  cors({
+    origin: 'http://localhost:8000',
+    credentials: true,
+  }),
+  // cors(),
 );
 
 const server = new ApolloServer({

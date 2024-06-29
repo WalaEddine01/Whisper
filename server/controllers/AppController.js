@@ -1,9 +1,7 @@
-import redisClient from '../utils/redis';
 import dbClient from '../utils/db';
 
 const status = (req, res) => {
   res.send({
-    redis: redisClient.isAlive(),
     db: dbClient.isAlive(),
   });
 };
