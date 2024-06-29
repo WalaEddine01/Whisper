@@ -22,9 +22,14 @@ const Button = styled.button`
 `;
 
 const ChatsToggle = () => {
+  const state = useAppStore((state) => state);
   const selectedTabType = useAppStore((state) => state.selectedTabType);
   const setManagementMode = useAppStore((state) => state.setManagementMode);
   const setSelectedTabType = useAppStore((state) => state.setSelectedTabType);
+
+  useEffect(() => {
+    console.log(state);
+  }, [selectedTabType]);
 
   function changeSelectedTab(type) {
     if (type === selectedTabType) return;

@@ -28,68 +28,102 @@ const ChatsItems = styled.div`
 const ChatsList = ({ searchQuery }) => {
   const selectedTabType = useAppStore((state) => state.selectedTabType);
   const selectedModeType = useAppStore((state) => state.selectedModeType);
-  // const directedChats = useAppStore((state) => state.directChats);
-  // const groupChats = useAppStore((state) => state.groupChats);
 
   const users = useAppStore((state) => state.users);
-  const publicGroups = useAppStore((state) => state.publicGroups);
   const store = useAppStore((state) => state);
   const userId = useAppStore((state) => state.userId);
-  const user = arrayToHashMap(users, 'id')[userId];
-  const directChatUserIds = user.directChats.map((chat) => chat.user.id);
-  const groupChatsUserIds = user.groupChats.map((group) => group.id);
+  const user = useAppStore((state) => state.user);
+
+  console.log(user);
+
+  const directChats = user.chatRooms.filter(
+    (chatRoom) => chatRoom.type === 'one-to-one',
+  );
+
+  // console.log(directChats);
+
+  const groupChats = user.chatRooms.filter(
+    (chatRoom) => chatRoom.type === 'group',
+  );
+  const directChatUserIds = directChats
+    .map((chat) => chat.users.map((user) => user.id))
+    .flat();
+
+  // console.log(directChatUserIds);
+  const groupChatsUserIds = groupChats
+    .map((group) => group.users.map((user) => user.id))
+    .flat();
 
   const discoveringUsers = users.filter(
     (user) => user.id !== userId && !directChatUserIds.includes(user.id),
   );
-  const discoveringGroups = publicGroups.filter(
-    (group) => !groupChatsUserIds.includes(group.id),
-  );
+  // const directUsers = directChats
+  //   .map((chat) => chat.users.filter((user) => user.id !== userId))
+  //   .flat();
+
+  // console.log(directUsers);
+  // console.log(discoveringUsers);
+
+  // const discoveringGroups = publicGroups.filter(
+  //   (group) => !groupChatsUserIds.includes(group.id),
+  // );
 
   const filteredDiscoveredUsers = discoveringUsers.filter((discoveredUser) => {
     const lowercasedQuery = searchQuery?.toLowerCase() || '';
-    console.log(discoveredUser);
+    // console.log(discoveredUser);
     return (
-      discoveredUser.name.toLowerCase().includes(lowercasedQuery) ||
+      // discoveredUser.name.toLowerCase().includes(lowercasedQuery) ||
       discoveredUser.username.toLowerCase().includes(lowercasedQuery)
     );
   });
 
-  const filteredDirectUsers = user.directChats.filter((directUser) => {
-    const lowercasedQuery = searchQuery?.toLowerCase() || '';
-    console.log(directUser);
-    return (
-      directUser.user.name.toLowerCase().includes(lowercasedQuery) ||
-      directUser.user.username.toLowerCase().includes(lowercasedQuery)
-    );
-  });
+  const filteredDirectChats = directChats
+    .filter((chat) =>
+      chat.users.some((user) => {
+        const lowercasedQuery = searchQuery?.toLowerCase() || '';
+        return (
+          user.username.toLowerCase().includes(lowercasedQuery) &&
+          user.id !== userId
+        );
+      }),
+    )
+    .flat();
 
-  const filteredDiscoveredGroups = discoveringGroups.filter(
-    (discoveredGroup) => {
-      const lowercasedQuery = searchQuery?.toLowerCase() || '';
-      return discoveredGroup.name.toLowerCase().includes(lowercasedQuery);
-    },
-  );
+  // console.log(filteredDirectUsers);
 
-  const filteredGroupChats = user.groupChats.filter((group) => {
-    const lowercasedQuery = searchQuery?.toLowerCase() || '';
-    return group.name.toLowerCase().includes(lowercasedQuery);
-  });
+  // const filteredDiscoveredGroups = discoveringGroups.filter(
+  //   (discoveredGroup) => {
+  //     const lowercasedQuery = searchQuery?.toLowerCase() || '';
+  //     return discoveredGroup.name.toLowerCase().includes(lowercasedQuery);
+  //   },
+  // );
 
-  useEffect(() => {
-    console.log(store);
-    console.log(discoveringGroups);
-  }, [selectedTabType, selectedModeType]);
+  // const filteredGroupChats = groupChats.filter((group) => {
+  //   const lowercasedQuery = searchQuery?.toLowerCase() || '';
+  //   return group.name.toLowerCase().includes(lowercasedQuery);
+  // });
+
+  // useEffect(() => {
+  //   console.log(filteredDiscoveredUsers);
+  //   console.log(filteredDirectUsers);
+  // }, [filteredDirectUsers, filteredDiscoveredUsers]);
+
+  // console.log(filteredDirectChats);
 
   if (selectedTabType === 'direct' && selectedModeType === 'discover') {
     return (
       <ChatsItems>
         <ChatsListStyled>
-          {filteredDiscoveredUsers.map((user, index) => {
+          {filteredDiscoveredUsers.map((discoveringUser, index) => {
             return (
               <ChatItem
-                key={user.id}
-                chat={{ user, mode: 'discover' }}
+                key={discoveringUser.id}
+                chat={{
+                  messages: [],
+                  type: 'one-to-one',
+                  users: [discoveringUser, user],
+                  mode: 'discover',
+                }}
                 even={index % 2}
                 type={'direct'}
               />
@@ -104,7 +138,8 @@ const ChatsList = ({ searchQuery }) => {
     return (
       <ChatsItems>
         <ChatsListStyled>
-          {filteredDirectUsers.map((chat, index) => {
+          {filteredDirectChats.map((chat, index) => {
+            // console.log(chat);
             return (
               <ChatItem
                 key={chat.id}
@@ -119,43 +154,53 @@ const ChatsList = ({ searchQuery }) => {
     );
   }
 
-  if (selectedTabType === 'groups' && selectedModeType === 'discover') {
-    return (
-      <ChatsItems>
-        <ChatsListStyled>
-          {filteredDiscoveredGroups.map((chat, index) => {
-            return (
-              <ChatItem
-                key={user.id}
-                chat={{ ...chat, mode: 'discover' }}
-                even={index % 2}
-                type={'group'}
-              />
-            );
-          })}
-        </ChatsListStyled>
-      </ChatsItems>
-    );
-  }
+  // if (selectedTabType === 'groups' && selectedModeType === 'discover') {
+  //   return (
+  //     <ChatsItems>
+  //       <ChatsListStyled>
+  //         {filteredDiscoveredGroups.map((chat, index) => {
+  //           return (
+  //             <ChatItem
+  //               key={user.id}
+  //               chat={{ ...chat, mode: 'discover' }}
+  //               even={index % 2}
+  //               type={'group'}
+  //             />
+  //           );
+  //         })}
+  //       </ChatsListStyled>
+  //     </ChatsItems>
+  //   );
+  // }
 
-  if (selectedTabType === 'groups' && selectedModeType === 'yours') {
-    return (
-      <ChatsItems>
-        <ChatsListStyled>
-          {filteredGroupChats.map((chat, index) => {
-            return (
-              <ChatItem
-                key={chat.id}
-                chat={chat}
-                even={index % 2}
-                type={'group'}
-              />
-            );
-          })}
-        </ChatsListStyled>
-      </ChatsItems>
-    );
-  }
+  // if (selectedTabType === 'groups' && selectedModeType === 'discover') {
+  //   return (
+  //     <ChatsItems>
+  //       <ChatsListStyled></ChatsListStyled>
+  //     </ChatsItems>
+  //   );
+  // }
+
+  // if (selectedTabType === 'groups' && selectedModeType === 'yours') {
+  //   return (
+  //     <ChatsItems>
+  //       <ChatsListStyled>
+  //         {filteredGroupChats.map((chat, index) => {
+  //           return (
+  //             <ChatItem
+  //               key={chat.id}
+  //               chat={chat}
+  //               even={index % 2}
+  //               type={'group'}
+  //             />
+  //           );
+  //         })}
+  //       </ChatsListStyled>
+  //     </ChatsItems>
+  //   );
+  // }
+
+  return null;
 
   // if (selectedTabType === 'groups' && selectedModeType === 'discover') {
   //   return (

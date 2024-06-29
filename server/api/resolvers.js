@@ -1,54 +1,102 @@
-import { User } from '../models/user';
-import { Message } from '../models/message';
 import { ChatRoom } from '../models/ChatRoom';
+import { Message } from '../models/message';
+import { User } from '../models/user';
 
 const resolvers = {
   Query: {
     users: async () => {
       const users = await User.find({}).populate('chatRooms');
-      return users;
+      return users.map((user) => ({
+        ...user._doc,
+        id: user._id.toString(),
+        createdAt: user.createdAt.toISOString(),
+      }));
     },
     user: async (_, { id }) => {
       const user = await User.findById(id).populate('chatRooms');
-      return user;
+      return {
+        ...user._doc,
+        id: user._id.toString(),
+        createdAt: user.createdAt.toISOString(),
+      };
     },
     messages: async () => {
       const messages = await Message.find({}).populate('sender chatRoom');
-      return messages;
+      return messages.map((message) => ({
+        ...message._doc,
+        id: message._id.toString(),
+        createdAt: message.createdAt.toISOString(),
+      }));
     },
     message: async (_, { id }) => {
       const message = await Message.findById(id).populate('sender chatRoom');
-      return message;
+      return {
+        ...message._doc,
+        id: message._id.toString(),
+        createdAt: message.createdAt.toISOString(),
+      };
     },
     chatRooms: async () => {
-      const chatRooms = await ChatRoom.find({}).populate('users');
-      return chatRooms;
+      const chatRooms = await ChatRoom.find({}).populate('users messages');
+      return chatRooms.map((chatRoom) => ({
+        ...chatRoom._doc,
+        id: chatRoom._id.toString(),
+        createdAt: chatRoom.createdAt.toISOString(),
+      }));
     },
     chatRoom: async (_, { id }) => {
-      const chatRoom = await ChatRoom.findById(id).populate('users');
-      return chatRoom;
+      const chatRoom = await ChatRoom.findById(id).populate('users messages');
+      return {
+        ...chatRoom._doc,
+        id: chatRoom._id.toString(),
+        createdAt: chatRoom.createdAt.toISOString(),
+      };
     },
   },
   User: {
     chatRooms: async (parent) => {
       const chatRooms = await ChatRoom.find({ users: parent._id });
-      return chatRooms;
+      return chatRooms.map((chatRoom) => ({
+        ...chatRoom._doc,
+        id: chatRoom._id.toString(),
+        createdAt: chatRoom.createdAt.toISOString(),
+      }));
     },
   },
   Message: {
     sender: async (parent) => {
       const user = await User.findById(parent.sender);
-      return user;
+      return {
+        ...user._doc,
+        id: user._id.toString(),
+        createdAt: user.createdAt.toISOString(),
+      };
     },
     chatRoom: async (parent) => {
       const chatRoom = await ChatRoom.findById(parent.chatRoom);
-      return chatRoom;
+      return {
+        ...chatRoom._doc,
+        id: chatRoom._id.toString(),
+        createdAt: chatRoom.createdAt.toISOString(),
+      };
     },
   },
   ChatRoom: {
     users: async (parent) => {
       const users = await User.find({ _id: { $in: parent.users } });
-      return users;
+      return users.map((user) => ({
+        ...user._doc,
+        id: user._id.toString(),
+        createdAt: user.createdAt.toISOString(),
+      }));
+    },
+    messages: async (parent) => {
+      const messages = await Message.find({ _id: { $in: parent.messages } });
+      return messages.map((message) => ({
+        ...message._doc,
+        id: message._id.toString(),
+        createdAt: message.createdAt.toISOString(),
+      }));
     },
   },
   Mutation: {
@@ -60,16 +108,30 @@ const resolvers = {
       const chatRoom = new ChatRoom({
         type,
         users,
+        createdAt: new Date().toISOString(),
       });
-      return await chatRoom.save();
+      await chatRoom.save();
+      return {
+        ...chatRoom._doc,
+        id: chatRoom._id.toString(),
+      };
     },
     createMessage: async (_, { senderId, content, chatRoomId }) => {
       const message = new Message({
         sender: senderId,
         content,
         chatRoom: chatRoomId,
+        createdAt: new Date().toISOString(),
       });
-      return await message.save();
+      await message.save();
+      // add it to the chat room
+      const chatRoom = await ChatRoom.findById(chatRoomId);
+      chatRoom.messages.push(message);
+      await chatRoom.save();
+      return {
+        ...message._doc,
+        id: message._id.toString(),
+      };
     },
   },
 };

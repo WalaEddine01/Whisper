@@ -24,10 +24,14 @@ const Button = styled.button`
 const ModesToggle = () => {
   const selectedModeType = useAppStore((state) => state.selectedModeType);
   const setSelectedModeType = useAppStore((state) => state.setSelectedModeType);
+  const state = useAppStore((state) => state);
+
+  useEffect(() => {
+    console.log(state);
+  }, [selectedModeType]);
 
   function changeSelectedMode(type) {
     if (type === selectedModeType) return;
-    console.log(type);
     setSelectedModeType(type);
   }
 
