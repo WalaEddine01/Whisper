@@ -93,7 +93,7 @@ const MessageInput = () => {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    await mutateFunction({
+    const { data: messageData } = await mutateFunction({
       variables: {
         senderId: userId,
         content: inputValue,
@@ -107,6 +107,7 @@ const MessageInput = () => {
       ],
       awaitRefetchQueries: true,
     });
+    console.log(messageData);
     const { data } = await getSelectedRoom({
       variables: { id: selectedChat.id },
     });

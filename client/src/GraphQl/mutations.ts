@@ -28,6 +28,9 @@ export const CREATE_MESSAGE = gql`
       content
       chatRoom {
         id
+        users {
+          id
+        }
       }
     }
   }
