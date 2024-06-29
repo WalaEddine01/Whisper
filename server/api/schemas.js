@@ -22,6 +22,7 @@ export const typeDefs = ` #graphql
         type: String!
         users: [User]!
         createdAt: String!
+        messages: [Message]
     }
 
     type Query {

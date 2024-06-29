@@ -37,7 +37,7 @@ const resolvers = {
       };
     },
     chatRooms: async () => {
-      const chatRooms = await ChatRoom.find({}).populate('users');
+      const chatRooms = await ChatRoom.find({}).populate('users messages');
       return chatRooms.map((chatRoom) => ({
         ...chatRoom._doc,
         id: chatRoom._id.toString(),
@@ -45,7 +45,7 @@ const resolvers = {
       }));
     },
     chatRoom: async (_, { id }) => {
-      const chatRoom = await ChatRoom.findById(id).populate('users');
+      const chatRoom = await ChatRoom.findById(id).populate('users messages');
       return {
         ...chatRoom._doc,
         id: chatRoom._id.toString(),
@@ -90,6 +90,14 @@ const resolvers = {
         createdAt: user.createdAt.toISOString(),
       }));
     },
+    messages: async (parent) => {
+      const messages = await Message.find({ _id: { $in: parent.messages } });
+      return messages.map((message) => ({
+        ...message._doc,
+        id: message._id.toString(),
+        createdAt: message.createdAt.toISOString(),
+      }));
+    },
   },
   Mutation: {
     createChatRoom: async (_, { type, userIds }) => {
@@ -116,6 +124,10 @@ const resolvers = {
         createdAt: new Date().toISOString(),
       });
       await message.save();
+      // add it to the chat room
+      const chatRoom = await ChatRoom.findById(chatRoomId);
+      chatRoom.messages.push(message);
+      await chatRoom.save();
       return {
         ...message._doc,
         id: message._id.toString(),
