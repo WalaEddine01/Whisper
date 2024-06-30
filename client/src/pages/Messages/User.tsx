@@ -30,7 +30,7 @@ const User = () => {
   return (
     <UserDiv isSmall={isSmall}>
       <Image>
-        <img src="" alt="" />
+        <img src={user.imgURL} alt="" />
       </Image>
       <Name>{user.username}</Name>
     </UserDiv>

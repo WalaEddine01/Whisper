@@ -41,3 +41,10 @@ export const Input = styled.input`
 
 export const InputDiv = styled.div``;
 
+export const Image = styled.div`
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: red;
+`;
+
