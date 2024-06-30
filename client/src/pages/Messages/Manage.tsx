@@ -24,9 +24,9 @@ const Manage = () => {
 
   function handleManageClick() {
     setSelectedChat(null);
-    setSelectedChatMessages([]);
     setSelectedDetails(null);
     setSelectedChatType(null);
+    console.log(selectedTabType);
     setManagementMode(selectedTabType);
   }
 

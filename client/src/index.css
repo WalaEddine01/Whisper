@@ -378,3 +378,26 @@ input[type='submit'] {
   min-height: calc(100vh - var(--navHeight));
 }
 
+::-webkit-scrollbar {
+  width: 8px;
+  background-color: #935265;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #935265;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--secondaryColor);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #935265 var(--mainColor);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--secondaryColor);
+}
+

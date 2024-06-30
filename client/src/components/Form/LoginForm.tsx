@@ -26,6 +26,15 @@ const LoginForm = ({ isLoading, setIsLoading }) => {
   const shouldRedirect = location.pathname === '/login';
   const user = useAppStore((state) => state.user);
 
+  const setManagementAction = useAppStore((state) => state.setManagementAction);
+  const setManagementMode = useAppStore((state) => state.setManagementMode);
+  const setSelectedChatMode = useAppStore((state) => state.setSelectedChatMode);
+  const setSelectedModeType = useAppStore((state) => state.setSelectedModeType);
+  const setSelectedDetails = useAppStore((state) => state.setSelectedDetails);
+  const setSelectedChatType = useAppStore((state) => state.setSelectedChatType);
+  const setSelectedTabType = useAppStore((state) => state.setSelectedTabType);
+  const setSelectedChat = useAppStore((state) => state.setSelectedChat);
+
   const {
     loading: usersLoading,
     error: usersError,
@@ -59,6 +68,14 @@ const LoginForm = ({ isLoading, setIsLoading }) => {
       console.log(res);
       setUserId(res.user);
       setUsers(usersData.users);
+      setManagementAction(false);
+      setManagementMode(false);
+      setSelectedChatMode(null);
+      setSelectedModeType('yours');
+      setSelectedDetails(null);
+      setSelectedChatType(null);
+      setSelectedTabType('direct');
+      setSelectedChat(null);
       refetch();
     } catch (error) {
       toast.error('Login failed!');
@@ -89,33 +106,44 @@ const LoginForm = ({ isLoading, setIsLoading }) => {
   return (
     <FormElement onSubmit={handleSubmit(onSubmit)}>
       <InputDiv>
-        <Input
-          type="text"
-          name="email"
-          placeholder="Email"
-          {...register('email', {
-            required: { value: true, message: 'Email is required' },
-          })}
-          disabled={isLoading}
-        />
+        {!isLoading && (
+          <Input
+            type="text"
+            name="email"
+            placeholder="Email"
+            {...register('email', {
+              required: { value: true, message: 'Email is required' },
+            })}
+            disabled={isLoading}
+          />
+        )}
         {errors.email && <Error>* {errors.email.message}</Error>}
         {isLoading && <Skeleton variant="rectangular" height={64} />}
       </InputDiv>
       <InputDiv>
-        <Input
-          type="password"
-          name="password"
-          placeholder="Password"
-          {...register('password', {
-            required: { value: true, message: 'Password is required' },
-          })}
-          disabled={isLoading}
-        />
+        {!isLoading && (
+          <Input
+            type="password"
+            name="password"
+            placeholder="Password"
+            {...register('password', {
+              required: { value: true, message: 'Password is required' },
+            })}
+            disabled={isLoading}
+          />
+        )}
         {errors.password && <Error>* {errors.password.message}</Error>}
         {isLoading && <Skeleton variant="rectangular" height={64} />}
       </InputDiv>
       <InputDiv>
-        <Submit type="submit" value="Login" name="Login" disabled={isLoading} />
+        {!isLoading && (
+          <Submit
+            type="submit"
+            value="Login"
+            name="Login"
+            disabled={isLoading}
+          />
+        )}
         {isLoading && (
           <Skeleton variant="rectangular" height={64} width={160} />
         )}

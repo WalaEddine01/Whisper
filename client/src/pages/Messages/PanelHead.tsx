@@ -149,7 +149,7 @@ const PanelHead = () => {
             </Text>
           </UserRow>
         </BackAndUser>
-        <IconsRow>
+        {/* <IconsRow>
           <button>
             <svg
               width="24"
@@ -189,7 +189,7 @@ const PanelHead = () => {
               />
             </svg>
           </button>
-        </IconsRow>
+        </IconsRow> */}
       </HeadRow>
     );
   }

@@ -1,11 +1,14 @@
-import jwt from 'jsonwebtoken';
 import { User } from '../models/user';
+import jwt from 'jsonwebtoken';
 
 const ErrorHandler = (err) => {
   console.log(err.message, err.code);
   const errors = { email: '', password: '', username: '' };
 
-  if (err.message === 'incorrect email' || err.message === 'incorrect username') {
+  if (
+    err.message === 'incorrect email' ||
+    err.message === 'incorrect username'
+  ) {
     const field = err.message.split(' ')[1];
     errors[field] = `That ${field} is not registered`;
   }
@@ -37,7 +40,8 @@ const ErrorHandler = (err) => {
   return errors;
 };
 const exDate = 10000;
-const createToken = (id) => jwt.sign({ id }, 'a secret to change later', { expiresIn: exDate });
+const createToken = (id) =>
+  jwt.sign({ id }, 'a secret to change later', { expiresIn: exDate });
 
 class AuthController {
   static async signupPost(request, response) {
@@ -84,3 +88,4 @@ class AuthController {
 }
 
 module.exports = AuthController;
+

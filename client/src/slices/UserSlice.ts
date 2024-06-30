@@ -3,6 +3,8 @@ const createUserSlice = (set) => ({
   setUser: (user) => set(() => ({ user: user })),
   userId: null,
   setUserId: (userId) => set(() => ({ userId: userId })),
+  users: [],
+  setUsers: (users) => set((state) => ({ users: users })),
 });
 
 export default createUserSlice;

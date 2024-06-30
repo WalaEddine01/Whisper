@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import ChatsList from './ChatsList';
 import ChatsSearch from './ChatsSearch';
 import ChatsToggle from './ChatsToggle';
+import Manage from './Manage';
 import ModesToggle from './ModesToggle';
 import Navbar from '../../components/Navbar/Navbar';
 import User from './User';
@@ -41,7 +42,7 @@ const Chats = () => {
         <ChatsToggle />
       </Toggles>
       <ChatsList searchQuery={searchQuery} />
-      {/* <Manage /> */}
+      <Manage />
     </ChatsDiv>
   );
 };

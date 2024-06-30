@@ -19,7 +19,6 @@ const NavbarStyled = styled.nav`
   width: 100%;
   color: white;
   z-index: 9;
-  padding: 0 16px;
   flex-shrink: 0;
 `;
 
