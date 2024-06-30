@@ -5,6 +5,7 @@ import './styles/GlobalVarables.css';
 import App from './App.tsx';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { Toaster } from 'react-hot-toast';
 
 import socket from './utils/socket'; // Adjust the path as necessary
 
@@ -29,6 +30,7 @@ socket;
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
+    <Toaster />
     <App />
   </React.StrictMode>,
 );

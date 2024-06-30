@@ -1,6 +1,6 @@
-import { User } from '../models/user';
-import { Message } from '../models/message';
 import { ChatRoom } from '../models/ChatRoom';
+import { Message } from '../models/message';
+import { User } from '../models/user';
 
 const resolvers = {
   Query: {

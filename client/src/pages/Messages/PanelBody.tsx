@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 
+import { CREATE_CHAT_ROOM } from '../../GraphQl/mutations';
+import { GET_CURRENT_USER } from '../../GraphQl/queries';
 import Message from './Message';
 import { arrayToHashMap } from '../../utils/utils';
 import styled from 'styled-components';
@@ -187,8 +190,8 @@ const PanelBody = () => {
   const setSelectedChatMessages = useAppStore(
     (state) => state.setSelectedChatMessages,
   );
-  const addToDirectChats = useAppStore((state) => state.addToDirectChats);
-  const addToGroupChats = useAppStore((state) => state.addToGroupChats);
+  // const addToDirectChats = useAppStore((state) => state.addToDirectChats);
+  // const addToGroupChats = useAppStore((state) => state.addToGroupChats);
   const setSelectedChatMode = useAppStore((state) => state.setSelectedChatMode);
   const userId = useAppStore((state) => state.userId);
   const state = useAppStore((state) => state);
@@ -197,51 +200,78 @@ const PanelBody = () => {
   const managementAction = useAppStore((state) => state.managementAction);
   const createNewGroup = useAppStore((state) => state.createNewGroup);
   const users = useAppStore((state) => state.users);
+  const updateSelectedChat = useAppStore((state) => state.updateSelectedChat);
   const [userSearchQuery, setUserSearchQuery] = useState('');
-  const [selectedGroupToAdd, setSelectedGroupToAdd] = useState(
-    arrayToHashMap(users, 'id')[userId].groupChats[0],
-  );
+  const setUser = useAppStore((state) => state.setUser);
+  const addChat = useAppStore((state) => state.addChat);
+  const user = useAppStore((state) => state.user);
+  // console.log(arrayToHashMap(users, '_id')[userId].chatRooms[0]);
+  // const [selectedGroupToAdd, setSelectedGroupToAdd] = useState(
+  //   arrayToHashMap(users, '_id')[userId].chatRooms[0] || {},
+  // );
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const [mutateFunction, { data, loading, error }] =
+    useMutation(CREATE_CHAT_ROOM);
 
   useEffect(() => {
     console.log(state);
   }, [state]);
 
+  const [
+    getUser,
+    { loading: userLoading, error: errorLoading, data: dataLoading },
+  ] = useLazyQuery(GET_CURRENT_USER);
+
+  console.log(selectedChat);
+
   function handleChangeUserSearchQuery(event) {
     setUserSearchQuery(event.target.value);
   }
 
-  function handleAddDirect() {
-    const newChat = {
-      id: Math.random().toString(),
-      user: selectedChat.user,
-      messages: [],
-    };
-
-    addToDirectChats(userId, newChat);
-
+  async function handleAddDirect() {
+    const response = await mutateFunction({
+      variables: {
+        type: 'one-to-one',
+        userIds: selectedChat.users.map((user) => user.id),
+      },
+      refetchQueries: [
+        {
+          query: GET_CURRENT_USER,
+          variables: { id: userId },
+        },
+      ],
+      awaitRefetchQueries: true,
+    });
+    console.log(response.data.createChatRoom);
     setSelectedChatMode('yours');
     setSelectedModeType('yours');
     setSelectedTabType('direct');
-    setSelectedChat(newChat);
-    setSelectedChatMessages([]);
+    const { data: userNewData } = await getUser({
+      variables: { id: userId },
+    });
+
+    setUser(userNewData.user);
+    updateSelectedChat(response.data.createChatRoom.id);
+    // setSelectedChatMessages([]);
+    // addChat(
+    //   selectedChat.users.map((user) => user.id),
+    //   response.data.createChatRoom,
+    // );
   }
 
   function handleAddGroup() {
-    const newGroup = {
-      name: selectedChat.name,
-      id: selectedChat.id,
-      users: selectedChat.users,
-      messages: selectedChat.messages,
-    };
-
-    addToGroupChats(userId, newGroup);
-
-    setSelectedChatMode('yours');
-    setSelectedModeType('yours');
-    setSelectedTabType('groups');
-    setSelectedChat(newGroup);
-    setSelectedChatMessages([]);
+    // const newGroup = {
+    //   name: selectedChat.name,
+    //   id: selectedChat.id,
+    //   users: selectedChat.users,
+    //   messages: selectedChat.messages,
+    // };
+    // addToGroupChats(userId, newGroup);
+    // setSelectedChatMode('yours');
+    // setSelectedModeType('yours');
+    // setSelectedTabType('groups');
+    // setSelectedChat(newGroup);
+    // setSelectedChatMessages([]);
   }
 
   useEffect(() => {
@@ -280,9 +310,9 @@ const PanelBody = () => {
     // addToDirectChats(userId, newChat);
   }
 
-  function handleChangeGroupSelection(e) {
-    setSelectedGroupToAdd(e.target.group.value);
-  }
+  // function handleChangeGroupSelection(e) {
+  //   setSelectedGroupToAdd(e.target.group.value);
+  // }
 
   function handleAddToSelected(user) {
     setSelectedUsers([...selectedUsers, user]);
@@ -308,88 +338,88 @@ const PanelBody = () => {
         </Form>
       );
     }
-    if (managementAction === 'addToGroup') {
-      const userGroupChats = arrayToHashMap(users, 'id')[userId].groupChats;
-      const groupsMap = arrayToHashMap(userGroupChats, 'id');
+    // if (managementAction === 'addToGroup') {
+    //   const userGroupChats = arrayToHashMap(users, 'id')[userId].groupChats;
+    //   const groupsMap = arrayToHashMap(userGroupChats, 'id');
 
-      const groupUserIds = selectedGroupToAdd?.users.map((user) => user.id);
-      const outGroupUsers = users.filter(
-        (user) => !groupUserIds.includes(user.id),
-      );
+    //   // const groupUserIds = selectedGroupToAdd?.users.map((user) => user.id);
+    //   const outGroupUsers = users.filter(
+    //     (user) => !groupUserIds.includes(user.id),
+    //   );
 
-      const filteredUsers = outGroupUsers.filter((outGroupUser) => {
-        const lowercasedQuery = userSearchQuery?.toLowerCase() || '';
-        console.log(outGroupUser);
-        console.log(selectedUsers);
-        return (
-          (outGroupUser.name.toLowerCase().includes(lowercasedQuery) ||
-            outGroupUser.username.toLowerCase().includes(lowercasedQuery)) &&
-          !selectedUsers.some(
-            (selectedUser) => selectedUser.id === outGroupUser.id,
-          )
-        );
-      });
+    //   const filteredUsers = outGroupUsers.filter((outGroupUser) => {
+    //     const lowercasedQuery = userSearchQuery?.toLowerCase() || '';
+    //     console.log(outGroupUser);
+    //     console.log(selectedUsers);
+    //     return (
+    //       (outGroupUser.name.toLowerCase().includes(lowercasedQuery) ||
+    //         outGroupUser.username.toLowerCase().includes(lowercasedQuery)) &&
+    //       !selectedUsers.some(
+    //         (selectedUser) => selectedUser.id === outGroupUser.id,
+    //       )
+    //     );
+    //   });
 
-      return (
-        <Form action="" onSubmit={(e) => handleAddUserSubmit(e)}>
-          <Select
-            name="group"
-            id=""
-            onChange={(e) => handleChangeGroupSelection(e)}>
-            {userGroupChats.map((group) => {
-              return <option value={group.id}>{group.name}</option>;
-            })}
-          </Select>
-          <div>
-            <Input
-              type="text"
-              name="user"
-              onChange={handleChangeUserSearchQuery}
-              value={userSearchQuery}
-              placeholder={'User Name'}
-            />
-            <SuggestionsList>
-              {filteredUsers.map((user) => {
-                return (
-                  <li>
-                    <SuggestionsListButton
-                      onClick={() => handleAddToSelected(user)}>
-                      <Image>
-                        <img src="" alt="" />
-                      </Image>
-                      <NameDiv>
-                        <p>{user.name}</p>
-                        <UserName>@{user.username}</UserName>
-                      </NameDiv>
-                    </SuggestionsListButton>
-                  </li>
-                );
-              })}
-            </SuggestionsList>
-          </div>
-          <SelectedList>
-            {selectedUsers.map((user) => {
-              return (
-                <SelectedListItem>
-                  <CloseButton
-                    onClick={() => handleRemoveFromSelected(user.id)}>
-                    &times;
-                  </CloseButton>
-                  <Image>
-                    <img src="" alt="" />
-                  </Image>
-                  <NameDiv>
-                    <p>{user.name}</p>
-                    <UserName>@{user.username}</UserName>
-                  </NameDiv>
-                </SelectedListItem>
-              );
-            })}
-          </SelectedList>
-          <Submit type="submit" />
-        </Form>
-      );
-    }
+    //   return (
+    //     <Form action="" onSubmit={(e) => handleAddUserSubmit(e)}>
+    //       <Select
+    //         name="group"
+    //         id=""
+    //         onChange={(e) => handleChangeGroupSelection(e)}>
+    //         {userGroupChats.map((group) => {
+    //           return <option value={group.id}>{group.name}</option>;
+    //         })}
+    //       </Select>
+    //       <div>
+    //         <Input
+    //           type="text"
+    //           name="user"
+    //           onChange={handleChangeUserSearchQuery}
+    //           value={userSearchQuery}
+    //           placeholder={'User Name'}
+    //         />
+    //         <SuggestionsList>
+    //           {filteredUsers.map((user) => {
+    //             return (
+    //               <li>
+    //                 <SuggestionsListButton
+    //                   onClick={() => handleAddToSelected(user)}>
+    //                   <Image>
+    //                     <img src="" alt="" />
+    //                   </Image>
+    //                   <NameDiv>
+    //                     <p>{user.name}</p>
+    //                     <UserName>@{user.username}</UserName>
+    //                   </NameDiv>
+    //                 </SuggestionsListButton>
+    //               </li>
+    //             );
+    //           })}
+    //         </SuggestionsList>
+    //       </div>
+    //       <SelectedList>
+    //         {selectedUsers.map((user) => {
+    //           return (
+    //             <SelectedListItem>
+    //               <CloseButton
+    //                 onClick={() => handleRemoveFromSelected(user.id)}>
+    //                 &times;
+    //               </CloseButton>
+    //               <Image>
+    //                 <img src="" alt="" />
+    //               </Image>
+    //               <NameDiv>
+    //                 <p>{user.name}</p>
+    //                 <UserName>@{user.username}</UserName>
+    //               </NameDiv>
+    //             </SelectedListItem>
+    //           );
+    //         })}
+    //       </SelectedList>
+    //       <Submit type="submit" />
+    //     </Form>
+    //   );
+    // }
   }
 
   if (managementMode === 'direct') {
@@ -422,10 +452,12 @@ const PanelBody = () => {
   }
 
   if (selectedChat) {
+    console.log(selectedChat);
+
     return (
       <BodyDiv>
         <ul>
-          {selectedChatMessages?.map((message) => {
+          {selectedChat.messages?.map((message) => {
             return (
               <Message
                 message={message}

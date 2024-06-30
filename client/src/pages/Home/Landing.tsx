@@ -2,6 +2,7 @@ import { ContainerMin } from '../../styles/GlobalStyledElements';
 import React from 'react';
 import styled from 'styled-components';
 import useAppStore from '../../Store';
+import { useNavigate } from 'react-router-dom';
 
 const LandingDiv = styled.div`
   min-height: calc(100vh - var(--navHeight));
@@ -39,10 +40,10 @@ const SVG = styled.svg`
 `;
 
 const Landing = () => {
-  const setUserId = useAppStore((state) => state.setUserId);
+  const navigate = useNavigate();
 
   function handleGetStarted() {
-    setUserId('j84985');
+    navigate('/messages');
   }
 
   return (
