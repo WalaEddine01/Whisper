@@ -36,9 +36,27 @@ const io = require('socket.io')(server2, {
   },
 });
 
+
+const userSockets = {};
+
 io.on('connection', (socket) => {
-  console.log('A user connected = ', socket.id);
+  const userId = socket.handshake.query.userId;
+  console.log(`A user connected: ${userId} with socket ID: ${socket.id}`);
+
+
+  userSockets[userId] = socket.id;
+
   socket.on('disconnect', () => {
-    console.log('User disconnected');
+    console.log(`User disconnected: ${userId}`);
+
+    delete userSockets[userId];
+  });
+
+
+  socket.on('sendMessage', ({ recipientId, message }) => {
+    const recipientSocketId = userSockets[recipientId];
+    if (recipientSocketId) {
+      io.to(recipientSocketId).emit('receiveMessage', { message, senderId: userId });
+    }
   });
 });
