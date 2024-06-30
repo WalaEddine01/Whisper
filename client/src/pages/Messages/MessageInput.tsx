@@ -12,14 +12,14 @@ import useAppStore from '../../Store';
 import { useLazyQuery } from '@apollo/client';
 
 const MessageDiv = styled.div`
-  border-radius: 4px;
+  /* border-radius: 4px; */
   outline: none;
   color: var(--mainTextColor);
   background-color: var(--mainColor);
   transition: all 0.3s ease-in-out;
   width: 100%;
   height: 112px;
-  border-radius: ${(props) => (props.isSmall ? '0' : '8px')};
+  /* border-radius: ${(props) => (props.isSmall ? '0' : '8px')}; */
   background-color: var(--mainColor);
   flex-direction: column;
   overflow: hidden;
@@ -68,12 +68,14 @@ const MessageInput = () => {
   const userId = useAppStore((state) => state.userId);
   const updateSelectedChat = useAppStore((state) => state.updateSelectedChat);
   const setSelectedChat = useAppStore((state) => state.setSelectedChat);
+  const setUser = useAppStore((state) => state.setUser);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const typingTimeout = 1000;
 
   const [mutateFunction] = useMutation(CREATE_MESSAGE);
-  const [getSelectedRoom, { data: selectedRoom }] = useLazyQuery(GET_CHAT_ROOM);
+  const [getSelectedRoom] = useLazyQuery(GET_CHAT_ROOM);
+  const [getUser] = useLazyQuery(GET_CURRENT_USER);
 
   // useEffect(() => {
   //   if (selectedRoom) {
@@ -107,12 +109,17 @@ const MessageInput = () => {
       ],
       awaitRefetchQueries: true,
     });
-    console.log(messageData);
+    const { data: userData } = await getUser({
+      variables: { id: userId },
+    });
+    console.log(userData.user);
+    setUser(userData.user);
     const { data } = await getSelectedRoom({
       variables: { id: selectedChat.id },
     });
+    console.log(data.chatRoom);
     setInputValue('');
-    setSelectedChat(data.chatRoom);
+    updateSelectedChat(data.chatRoom.id);
   }
 
   const handleInputChange = (e) => setInputValue(e.target.value);

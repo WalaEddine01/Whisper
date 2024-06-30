@@ -1,6 +1,7 @@
 import './App.css';
 
 import {
+  Navigate,
   RouterProvider,
   createBrowserRouter,
   useLocation,
@@ -10,6 +11,7 @@ import { useEffect, useState } from 'react';
 
 import About from './pages/About/About';
 import { ApolloProvider } from '@apollo/client';
+import ErrorPage from './pages/ErrorPage';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import Logout from './pages/Logout/Logout';
@@ -28,6 +30,10 @@ const router = createBrowserRouter([
       {
         path: '',
         element: <Home />,
+      },
+      {
+        path: 'home',
+        element: <Navigate to="/" />,
       },
       {
         path: 'login',
@@ -64,6 +70,10 @@ const router = createBrowserRouter([
             <Messages />
           </ProtectedPages>
         ),
+      },
+      {
+        path: '*',
+        element: <ErrorPage />,
       },
     ],
   },

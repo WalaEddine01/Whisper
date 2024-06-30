@@ -12,7 +12,7 @@ const MessagesContainer = styled.div`
   gap: 16px;
   justify-content: space-between;
   width: 100%;
-  padding: ${(props) => (props.isSmall ? '0' : '0 16px')};
+  /* padding: ${(props) => (props.isSmall ? '0' : '0 16px')}; */
   margin-top: ${(props) => (props.isSmall ? '-80px' : '0')};
 `;
 
@@ -20,12 +20,22 @@ const Messages = () => {
   const isSmall = useAppStore((state) => state.isSmall);
   const selectedChat = useAppStore((state) => state.selectedChat);
   const selectedDetails = useAppStore((state) => state.selectedDetails);
+  const managementMode = useAppStore((state) => state.managementMode);
+
+  useEffect(() => {
+    console.log(managementMode);
+  }, [managementMode]);
 
   return (
-    <Container isSmall={isSmall}>
+    <Container isSmall={isSmall} messages={true}>
       <MessagesContainer>
-        {isSmall && selectedChat ? '' : <Chats />}
-        {(isSmall && !selectedChat) || (isSmall && selectedDetails) ? (
+        {(isSmall && selectedChat) || (isSmall && managementMode) ? (
+          ''
+        ) : (
+          <Chats />
+        )}
+        {(isSmall && !selectedChat && !managementMode) ||
+        (isSmall && selectedDetails) ? (
           ''
         ) : (
           <Panel />

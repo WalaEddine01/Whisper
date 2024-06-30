@@ -1,11 +1,14 @@
-import jwt from 'jsonwebtoken';
 import { User } from '../models/user';
+import jwt from 'jsonwebtoken';
 
 const ErrorHandler = (err) => {
   console.log(err.message, err.code);
   const errors = { email: '', password: '', username: '' };
 
-  if (err.message === 'incorrect email' || err.message === 'incorrect username') {
+  if (
+    err.message === 'incorrect email' ||
+    err.message === 'incorrect username'
+  ) {
     const field = err.message.split(' ')[1];
     errors[field] = `That ${field} is not registered`;
   }
@@ -37,7 +40,8 @@ const ErrorHandler = (err) => {
   return errors;
 };
 const exDate = 10000;
-const createToken = (id) => jwt.sign({ id }, 'a secret to change later', { expiresIn: exDate });
+const createToken = (id) =>
+  jwt.sign({ id }, 'a secret to change later', { expiresIn: exDate });
 
 class AuthController {
   static async signupPost(request, response) {
@@ -52,7 +56,6 @@ class AuthController {
       response.status(400).json(errorJson);
     }
   }
-
 
   static async logout(request, response) {
     response.cookie('jwt', '', { maxAge: 1 });
@@ -70,7 +73,7 @@ class AuthController {
     }
 
     try {
-      const user = await User.login(loginCredential, password);  
+      const user = await User.login(loginCredential, password);
       console.log(user);
       console.log(user.email);
       console.log(user.password);
@@ -82,7 +85,7 @@ class AuthController {
       response.status(400).json(errorJson);
     }
   }
-
 }
 
 module.exports = AuthController;
+

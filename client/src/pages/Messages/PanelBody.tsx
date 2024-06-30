@@ -182,6 +182,7 @@ const PanelBody = () => {
   const selectedChatMessages = useAppStore(
     (state) => state.selectedChatMessages,
   );
+  const setManagementMode = useAppStore((state) => state.setManagementMode);
   const selectedChatType = useAppStore((state) => state.selectedChatType);
   const selectedChatMode = useAppStore((state) => state.selectedChatMode);
   const setSelectedTabType = useAppStore((state) => state.setSelectedTabType);
@@ -259,19 +260,32 @@ const PanelBody = () => {
     // );
   }
 
-  function handleAddGroup() {
-    // const newGroup = {
-    //   name: selectedChat.name,
-    //   id: selectedChat.id,
-    //   users: selectedChat.users,
-    //   messages: selectedChat.messages,
-    // };
-    // addToGroupChats(userId, newGroup);
-    // setSelectedChatMode('yours');
-    // setSelectedModeType('yours');
-    // setSelectedTabType('groups');
-    // setSelectedChat(newGroup);
-    // setSelectedChatMessages([]);
+  async function handleAddGroup(e) {
+    e.preventDefault();
+    const response = await mutateFunction({
+      variables: {
+        type: 'group',
+        userIds: [userId, ...selectedUsers.map((user) => user.id)],
+      },
+      refetchQueries: [
+        {
+          query: GET_CURRENT_USER,
+          variables: { id: userId },
+        },
+      ],
+      awaitRefetchQueries: true,
+    });
+    console.log(response.data.createChatRoom);
+    setSelectedChatMode('yours');
+    setSelectedModeType('yours');
+    setSelectedTabType('groups');
+    const { data: userNewData } = await getUser({
+      variables: { id: userId },
+    });
+    setUser(userNewData.user);
+    setManagementMode(false);
+    setManagementAction(false);
+    updateSelectedChat(response.data.createChatRoom.id);
   }
 
   useEffect(() => {
@@ -314,39 +328,106 @@ const PanelBody = () => {
   //   setSelectedGroupToAdd(e.target.group.value);
   // }
 
-  function handleAddToSelected(user) {
+  function handleAddToSelected(e, user) {
+    e.preventDefault();
+    e.stopPropagation();
     setSelectedUsers([...selectedUsers, user]);
   }
 
-  function handleRemoveFromSelected(id) {
+  function handleRemoveFromSelected(e, id) {
+    e.preventDefault();
+    e.stopPropagation();
     setSelectedUsers(selectedUsers.filter((user) => user.id !== id));
   }
 
   if (managementAction) {
+    const directChats = user.chatRooms.filter(
+      (chatRoom) => chatRoom.type === 'one-to-one',
+    );
+
+    console.log(selectedUsers);
+    const filteredChats = directChats.filter((chat) =>
+      chat.users.every(
+        (user) =>
+          !selectedUsers.some((selectedUser) => user.id === selectedUser.id),
+      ),
+    );
+    console.log(filteredChats);
+
+    const directChatUsers = filteredChats
+      .map((chat) => chat.users.filter((user) => user.id !== userId))
+      .flat();
+
+    console.log(directChatUsers);
+
+    const filteredUsers = directChatUsers.filter((directChatUser) => {
+      const lowercasedQuery = userSearchQuery?.toLowerCase() || '';
+      console.log(directChatUser);
+      console.log(selectedUsers);
+      return directChatUser.username.toLowerCase().includes(lowercasedQuery);
+    });
+
     if (managementAction === 'addGroup') {
       return (
-        <Form action="" onSubmit={(e) => handleCreateGroupSubmit(e)}>
+        <Form action="" onSubmit={(e) => handleAddGroup(e)}>
           <Input type="text" name="name" placeholder="Name" />
           <Select name="policy" id="">
-            <option value="public">public</option>
             <option value="private">private</option>
+            <option value="public">public</option>
           </Select>
-          <Image>
-            <img src="" alt="" />
-          </Image>
+          <div>
+            <Input
+              type="text"
+              name="user"
+              onChange={handleChangeUserSearchQuery}
+              value={userSearchQuery}
+              placeholder={'User Name'}
+              disabled={directChatUsers.length === 0}
+            />
+            <SuggestionsList>
+              {filteredUsers.map((user) => {
+                return (
+                  <li>
+                    <SuggestionsListButton
+                      onClick={(e) => handleAddToSelected(e, user)}>
+                      <Image>
+                        <img src="" alt="" />
+                      </Image>
+                      <NameDiv>
+                        <p>{user.name}</p>
+                        <UserName>@{user.username}</UserName>
+                      </NameDiv>
+                    </SuggestionsListButton>
+                  </li>
+                );
+              })}
+            </SuggestionsList>
+          </div>
+          <SelectedList>
+            {selectedUsers.map((user) => {
+              return (
+                <SelectedListItem>
+                  <CloseButton
+                    onClick={(e) => handleRemoveFromSelected(e, user.id)}>
+                    &times;
+                  </CloseButton>
+                  <Image>
+                    <img src="" alt="" />
+                  </Image>
+                  <NameDiv>
+                    <p>{user.name}</p>
+                    <UserName>@{user.username}</UserName>
+                  </NameDiv>
+                </SelectedListItem>
+              );
+            })}
+          </SelectedList>
+
           <Submit type="submit" />
         </Form>
       );
     }
     // if (managementAction === 'addToGroup') {
-    //   const userGroupChats = arrayToHashMap(users, 'id')[userId].groupChats;
-    //   const groupsMap = arrayToHashMap(userGroupChats, 'id');
-
-    //   // const groupUserIds = selectedGroupToAdd?.users.map((user) => user.id);
-    //   const outGroupUsers = users.filter(
-    //     (user) => !groupUserIds.includes(user.id),
-    //   );
-
     //   const filteredUsers = outGroupUsers.filter((outGroupUser) => {
     //     const lowercasedQuery = userSearchQuery?.toLowerCase() || '';
     //     console.log(outGroupUser);
