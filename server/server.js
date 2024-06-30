@@ -25,7 +25,21 @@ app.use(express.json());
 app.use('/', router);
 
 const PORT = 5000;
-app.listen(PORT, () => {
+const server2 = app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}${server.graphqlPath}`);
 });
 
+
+const io = require('socket.io')(server2, {
+  pingTimeout: 60000,
+  cors: {
+    origin: '*',
+  },
+});
+
+io.on('connection', (socket) => {
+  console.log('A user connected = ', socket.id);
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
+});

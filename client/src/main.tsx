@@ -7,6 +7,13 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Toaster } from 'react-hot-toast';
 
+import socket from './utils/socket'; // Adjust the path as necessary
+
+socket;
+
+
+
+
 // import { Workbox } from 'workbox-window'; // Import Workbox for service worker handling
 
 // if ('serviceWorker' in navigator) {
