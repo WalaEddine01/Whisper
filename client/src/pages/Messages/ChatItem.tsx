@@ -23,6 +23,8 @@ const ChatRow = styled.button`
 `;
 
 const ChatItem = ({ chat, even, type }) => {
+  const state = useAppStore((state) => state);
+  // console.log(chat);
   const setSelectedChat = useAppStore((state) => state.setSelectedChat);
   const setSelectedChatMessages = useAppStore(
     (state) => state.setSelectedChatMessages,
@@ -31,29 +33,48 @@ const ChatItem = ({ chat, even, type }) => {
   const setSelectedChatType = useAppStore((state) => state.setSelectedChatType);
   const setSelectedChatMode = useAppStore((state) => state.setSelectedChatMode);
   const setManagementMode = useAppStore((state) => state.setManagementMode);
-  const selectedChatType = useAppStore((state) => state.selectedChatsType);
+  const selectedChat = useAppStore((state) => state.selectedChat);
   const setManagementAction = useAppStore((state) => state.setManagementAction);
-
-  function handleChatClick() {
-    setSelectedChat(chat);
-    setSelectedChatMessages(chat.messages);
-    setSelectedDetails(null);
-    setSelectedChatType(type);
-    setSelectedChatMode(chat.mode || 'yours');
-    setManagementMode(null);
-    setManagementAction(null);
-    console.log(type);
-  }
+  const userId = useAppStore((state) => state.userId);
+  const setSelectedTabType = useAppStore((state) => state.setSelectedTabType);
+  const updateSelectedChat = useAppStore((state) => state.updateSelectedChat);
 
   useEffect(() => {
-    console.log(selectedChatType);
-    console.log(chat);
-  }, [selectedChatType]);
+    console.log(state);
+  }, [selectedChat]);
+
+  function handleChatClick() {
+    // console.log(setSelectedChat);
+    // console.log(selectedChat);
+    if (chat.mode === 'discover') {
+      setSelectedChat(chat);
+    } else {
+      updateSelectedChat(chat.id);
+    }
+    // setSelectedChatMessages(chat.messages);
+    // setSelectedDetails(null);
+    setSelectedChatType(type);
+    setSelectedChatMode(chat.mode || 'yours');
+    // setManagementMode(null);
+    // setManagementAction(null);
+
+    // console.log(type);
+    // console.log(chat);
+  }
+
+  // console.log(chat);
+
+  // useEffect(() => {
+  //   console.log(selectedChat);
+  //   console.log(chat);
+  // }, [selectedChat]);
 
   return (
     <ChatRow onClick={() => handleChatClick()} even={even}>
       <Image />
-      <div>{chat.user?.name || chat.name}</div>
+      {chat.type === 'one-to-one' && (
+        <div>{chat.users.filter((user) => user.id !== userId)[0].username}</div>
+      )}
       <div>{chat.lastMessage}</div>
     </ChatRow>
   );

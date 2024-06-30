@@ -32,13 +32,20 @@ const DetailsBody = () => {
   const selectedDetails = useAppStore((state) => state.selectedDetails);
   const setSelectedDetails = useAppStore((state) => state.setSelectedDetails);
   const selectedChatType = useAppStore((state) => state.selectedChatType);
+  const userId = useAppStore((state) => state.userId);
 
   return (
     <HeadRow>
       <Image />
       <p>{selectedDetails.user?.name || selectedDetails.name}</p>
       {selectedChatType === 'direct' ? (
-        <UserName>@{selectedDetails.user?.username}</UserName>
+        <UserName>
+          @
+          {
+            selectedDetails.users.filter((user) => user.id !== userId)[0]
+              .username
+          }
+        </UserName>
       ) : (
         <UserName>{selectedDetails.policy}</UserName>
       )}

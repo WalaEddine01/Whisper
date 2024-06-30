@@ -1,8 +1,10 @@
 import { ContainerMin } from '../../styles/GlobalStyledElements';
-import { NavLink } from 'react-router-dom';
-import styled from 'styled-components';
-import SignupForm from './SignupForm';
 import LoginForm from './LoginForm';
+import { NavLink } from 'react-router-dom';
+import SignupForm from './SignupForm';
+import { Skeleton } from '@mui/material';
+import styled from 'styled-components';
+import { useState } from 'react';
 
 const SignDiv = styled.div`
   display: flex;
@@ -56,6 +58,8 @@ const FormPage = ({
   redirectLink,
   type,
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
+
   return (
     <div>
       <ContainerMin>
@@ -63,14 +67,23 @@ const FormPage = ({
           <SVG>{svg}</SVG>
           <DivText>
             <div>
-              <Heading>{head}!</Heading>
-              <P>
-                {secondaryText}
-                <NavLinkStyled to={redirectLink}>{redirectText}</NavLinkStyled>
-              </P>
+              {isLoading && <Skeleton variant="rectangular" height={112} />}
+              {!isLoading && <Heading>{head}!</Heading>}
+              {!isLoading && (
+                <P>
+                  {secondaryText}
+                  <NavLinkStyled to={redirectLink}>
+                    {redirectText}
+                  </NavLinkStyled>
+                </P>
+              )}
             </div>
-            {type === 'signup' && <SignupForm />}
-            {type === 'login' && <LoginForm />}
+            {type === 'signup' && (
+              <SignupForm isLoading={isLoading} setIsLoading={setIsLoading} />
+            )}
+            {type === 'login' && (
+              <LoginForm isLoading={isLoading} setIsLoading={setIsLoading} />
+            )}
           </DivText>
         </SignDiv>
       </ContainerMin>

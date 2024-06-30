@@ -76,26 +76,26 @@ const Message = ({ message, selectedChatType }) => {
 
   return (
     <li>
-      <MessageDiv me={message.userId === userId}>
+      <MessageDiv me={message.sender.id === userId}>
         <MessageRow>
-          {selectedChatType === 'group' && (userId !== message.userId) && (
-            <Image me={message.userId === userId} />
+          {selectedChatType === 'group' && (userId !== message.sender.id) && (
+            <Image me={message.sender.id === userId} />
           )}
           <MessageButton
-            me={message.userId === userId}
+            me={message.sender.id === userId}
             onClick={toggleDetails}>
-            {message.text}
+            {message.content}
           </MessageButton>
         </MessageRow>
         {isDetailed && (
           <Details
-            me={message.userId === userId}
+            me={message.sender.id === userId}
             group={selectedChatType === 'group'}>
-            <Time me={message.userId === userId}>{message.time}</Time>
-            {selectedChatType === 'group' && (userId !== message.userId) && (
+            <Time me={message.sender.id === userId}>{message.createdAt}</Time>
+            {selectedChatType === 'group' && (userId !== message.sender.id) && (
                 <>
                   <span>-</span>
-                  <User>{message.userId}</User>
+                  <User>{message.sender.id}</User>
                 </>,
               )}
           </Details>

@@ -1,10 +1,15 @@
+import { GET_CHAT_ROOM, GET_CURRENT_USER } from '../../GraphQl/queries';
+import { NetworkStatus, useMutation, useQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 
+import { CREATE_MESSAGE } from '../../GraphQl/mutations';
 import React from 'react';
 import TypingLoader from '../../components/Loaders/TypingLoader';
 import { arrayToHashMap } from '../../utils/utils';
+import { client } from '../../graphqlClient';
 import styled from 'styled-components';
 import useAppStore from '../../Store';
+import { useLazyQuery } from '@apollo/client';
 
 const MessageDiv = styled.div`
   border-radius: 4px;
@@ -56,65 +61,65 @@ const Typing = styled.div`
 `;
 
 const MessageInput = () => {
+  const state = useAppStore((state) => state);
   const selectedChatMode = useAppStore((state) => state.selectedChatMode);
   const selectedChat = useAppStore((state) => state.selectedChat);
   const isSmall = useAppStore((state) => state.isSmall);
+  const userId = useAppStore((state) => state.userId);
+  const updateSelectedChat = useAppStore((state) => state.updateSelectedChat);
+  const setSelectedChat = useAppStore((state) => state.setSelectedChat);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const typingTimeout = 1000; // Timeout in ms to consider the user stopped typing
-  const userId = useAppStore((state) => state.userId);
-  const users = useAppStore((state) => state.users);
-  const user = arrayToHashMap(users, 'id')[userId];
-  const directChat = arrayToHashMap(user.directChats, 'id')[selectedChat.id];
-  const setSelectedChatMessages = useAppStore(
-    (state) => state.setSelectedChatMessages,
-  );
-  const addMessageToDirectChat = useAppStore(
-    (state) => state.addMessageToDirectChat,
-  );
-  const addMessageToGroupChat = useAppStore(
-    (state) => state.addMessageToGroupChat,
-  );
-  const selectedChatType = useAppStore((state) => state.selectedChatType);
+  const typingTimeout = 1000;
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    const message = {
-      userId: userId,
-      id: Math.random().toString(),
-      text: inputValue,
-      time: Date.now(),
-      type: 'text',
-    };
-    if (selectedChatType === 'direct') {
-      addMessageToDirectChat(userId, selectedChat.id, message);
-    } else if (selectedChatType === 'group') {
-      addMessageToGroupChat(userId, selectedChat.id, message);
-    }
-  }
+  const [mutateFunction] = useMutation(CREATE_MESSAGE);
+  const [getSelectedRoom, { data: selectedRoom }] = useLazyQuery(GET_CHAT_ROOM);
+
+  // useEffect(() => {
+  //   if (selectedRoom) {
+  //     console.log(selectedRoom.chatRoom);
+  //     updateSelectedChat(selectedRoom.chatRoom);
+  //     console.log(state);
+  //   }
+  // }, [selectedRoom, updateSelectedChat]);
 
   useEffect(() => {
     if (inputValue) {
       setIsTyping(true);
-
-      const timer = setTimeout(() => {
-        setIsTyping(false);
-      }, typingTimeout);
-
+      const timer = setTimeout(() => setIsTyping(false), typingTimeout);
       return () => clearTimeout(timer);
     }
   }, [inputValue]);
 
-  const handleInputChange = (e) => {
-    setInputValue(e.target.value);
-  };
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const { data: messageData } = await mutateFunction({
+      variables: {
+        senderId: userId,
+        content: inputValue,
+        chatRoomId: selectedChat.id,
+      },
+      refetchQueries: [
+        {
+          query: GET_CHAT_ROOM,
+          variables: { id: selectedChat.id },
+        },
+      ],
+      awaitRefetchQueries: true,
+    });
+    console.log(messageData);
+    const { data } = await getSelectedRoom({
+      variables: { id: selectedChat.id },
+    });
+    setInputValue('');
+    setSelectedChat(data.chatRoom);
+  }
+
+  const handleInputChange = (e) => setInputValue(e.target.value);
 
   const handleKeyDown = (event) => {
     if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault(); // Prevents the default action (e.g., newline in textarea)
-      console.log('aho');
-      setInputValue('');
-      setIsTyping(false);
+      event.preventDefault();
       handleSubmit(event);
     }
   };
@@ -122,10 +127,9 @@ const MessageInput = () => {
   if (selectedChatMode === 'discover') return null;
 
   return (
-    <form action="" onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit}>
       <MessageDiv isSmall={isSmall}>
         <Input
-          type="text"
           placeholder="Write your message..."
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}

@@ -17,7 +17,6 @@ const Input = styled.input`
 
 const ChatsSearch = ({ searchQuery, setSearchQuery }) => {
   function handleSerachChange(e) {
-    console.log(setSearchQuery);
     setSearchQuery(e.target.value);
   }
 

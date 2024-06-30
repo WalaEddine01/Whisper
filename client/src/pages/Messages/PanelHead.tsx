@@ -63,6 +63,7 @@ const PanelHead = () => {
   const setManagementMode = useAppStore((state) => state.setManagementMode);
   const setManagementAction = useAppStore((state) => state.setManagementAction);
   const selectedTabType = useAppStore((state) => state.selectedTabType);
+  const userId = useAppStore((state) => state.userId);
 
   function handleHeadClick() {
     let newSelectedDetails = null;
@@ -131,7 +132,15 @@ const PanelHead = () => {
           <UserRow onClick={() => handleHeadClick()}>
             <Image />
             <Text>
-              <h1>{selectedChat.user?.name || selectedChat.name}</h1>
+              {selectedChat.type === 'one-to-one' && (
+                <h1>
+                  {
+                    selectedChat.users.filter((user) => user.id !== userId)[0]
+                      .username
+                  }
+                </h1>
+              )}
+
               <Type>
                 {selectedChatType === 'direct'
                   ? 'Direct Messages'

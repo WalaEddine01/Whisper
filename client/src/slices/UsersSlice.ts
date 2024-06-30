@@ -1,274 +1,54 @@
 const createUsersSlice = (set, get) => ({
-  users: [
-    {
-      id: 1,
-      name: 'John',
-      username: 'John',
-      email: 'John@gmail.com',
-    },
-    {
-      id: 2,
-      name: 'Jane',
-      username: 'Jane',
-      email: 'Jane@gmail.com',
-    },
-    {
-      id: 3,
-      name: 'Jack',
-      username: 'Jack',
-      email: 'Jack@gmail.com',
-    },
-    {
-      id: 4,
-      name: 'Jill',
-      username: 'Jill',
-      email: 'Jill@gmail.com',
-    },
-    {
-      id: 5,
-      name: 'Joe',
-      username: 'Joe',
-      email: 'Joe@gmail.com',
-    },
-    {
-      id: 6,
-      name: 'Jill',
-      username: 'Jill',
-      email: 'Jill@gmail.com',
-    },
-    {
-      id: 7,
-      name: 'Mohamed',
-      username: 'Mohamed',
-      email: 'Mohamed@gmail.com',
-    },
-    {
-      id: 8,
-      name: 'Wael',
-      username: 'Wael',
-      email: 'Wael@gmail.com',
-    },
-    {
-      id: 'j84985',
-      name: 'Amr',
-      username: 'Amr',
-      email: 'Amr@gmail.com',
-      directChats: [
-        {
-          id: 1,
-          user: {
-            name: 'Ahmed',
-            username: 'ahmed',
-            email: 'ahmed@example.com',
-            id: 10,
-          },
-          messages: [
-            {
-              userId: 1,
-              id: 1,
-              text: 'Hello',
-              time: '12:00',
-              type: 'text',
-            },
-            {
-              userId: 'j84985',
-              id: 2,
-              text: 'Hello, How are you?',
-              time: '12:01',
-              type: 'text',
-            },
-            {
-              userId: 'j84985',
-              id: 3,
-              text: 'And your family?',
-              time: '12:02',
-              type: 'text',
-            },
-            {
-              userId: 1,
-              id: 4,
-              text: 'We are good',
-              time: '12:03',
-              type: 'text',
-            },
-            {
-              userId: 'j84985',
-              id: 5,
-              text: 'We are good too',
-              time: '12:04',
-              type: 'text',
-            },
-          ],
-        },
-      ],
-      groupChats: [
-        {
-          name: 'eFootball',
-          id: 20,
-          policy: 'public',
-          users: [
-            {
-              id: 1,
-              name: 'Ahmed',
-            },
-            {
-              id: 'j84985',
-              name: 'Amr',
-            },
-          ],
-          messages: [
-            {
-              userId: 5,
-              id: 1,
-              text: 'Hey!',
-              time: '08:00',
-              type: 'text',
-            },
-            {
-              userId: 'j84985',
-              id: 2,
-              text: "Hi Michael, how's it going?",
-              time: '08:01',
-              type: 'text',
-            },
-            {
-              userId: 5,
-              id: 3,
-              text: "I'm doing well, thanks!",
-              time: '08:02',
-              type: 'text',
-            },
-            {
-              userId: 'j84985',
-              id: 4,
-              text: 'Glad to hear that!',
-              time: '08:03',
-              type: 'text',
-            },
-          ],
-        },
-      ],
-    },
-    {
-      id: 10,
-      name: 'Ahmed',
-      username: 'Ahmed',
-      email: 'Ahmed@gmail.com',
-    },
-  ],
+  users: [],
+  chatRooms: [],
+  messages: [],
 
-  publicGroups: [
-    {
-      name: 'FIFA',
-      id: 100,
-      users: [
-        {
-          id: 10,
-          name: 'Ahmed',
-          username: 'Ahmed',
-          email: 'Ahmed@gmail.com',
-        },
-        {
-          id: 'j84985',
-          name: 'Amr',
-          username: 'Amr',
-          email: 'Amr@gmail.com',
-        },
-      ],
-      messages: [
-        {
-          userId: 10,
-          id: 1,
-          text: 'Hey!',
-          time: '08:00',
-          type: 'text',
-        },
-        {
-          userId: 'j84985',
-          id: 2,
-          text: "Hi Michael, how's it going?",
-          time: '08:01',
-          type: 'text',
-        },
-        {
-          userId: 10,
-          id: 3,
-          text: "I'm doing well, thanks!",
-          time: '08:02',
-          type: 'text',
-        },
-        {
-          userId: 'j84985',
-          id: 4,
-          text: 'Glad to hear that!',
-          time: '08:03',
-          type: 'text',
-        },
-      ],
-    },
-    {
-      name: 'eFootball',
-      id: 20,
-      policy: 'public',
-      users: [
-        {
-          id: 1,
-          name: 'Ahmed',
-        },
-        {
-          id: 'j84985',
-          name: 'Amr',
-        },
-      ],
-      messages: [
-        {
-          userId: 5,
-          id: 1,
-          text: 'Hey!',
-          time: '08:00',
-          type: 'text',
-        },
-        {
-          userId: 'j84985',
-          id: 2,
-          text: "Hi Michael, how's it going?",
-          time: '08:01',
-          type: 'text',
-        },
-        {
-          userId: 5,
-          id: 3,
-          text: "I'm doing well, thanks!",
-          time: '08:02',
-          type: 'text',
-        },
-        {
-          userId: 'j84985',
-          id: 4,
-          text: 'Glad to hear that!',
-          time: '08:03',
-          type: 'text',
-        },
-      ],
-    },
-  ],
+  setUsers: (users) => set((state) => ({ users: users })),
 
-  addToDirectChats: (userId, chat) =>
+  addChat: (userIds, chat) =>
     set((state) => {
       const users = state.users.map((user) => {
-        if (user.id === userId) {
+        if (userIds.includes(user.id)) {
           return {
             ...user,
-            directChats: [...user.directChats, chat],
+            chatRooms: [...user.chatRooms, chat],
           };
         }
         return user;
       });
 
-      console.log();
+      if (userIds.includes(state.user.id)) {
+        state.user = {
+          ...state.user,
+          chatRooms: [...state.user.chatRooms, chat],
+        };
+      }
 
       return { users };
     }),
+
+  addMessage: (roomId, message) =>
+    set((state) => {
+      console.log(roomId);
+
+      const updatedRooms = state.user.chatRooms.map((room) => {
+        console.log(room);
+        if (room.id === roomId) {
+          return {
+            ...room,
+            messages: [...room.messages, message],
+          };
+        }
+        return room;
+      });
+
+      return { user: { ...state.user, chatRooms: updatedRooms } };
+    }),
+
+  updateSelectedChat: (roomId) =>
+    set((state) => ({
+      selectedChat: state.user.chatRooms.find((room) => room.id === roomId),
+    })),
 
   addToGroupChats: (userId, chat) =>
     set((state) => {
@@ -290,7 +70,7 @@ const createUsersSlice = (set, get) => ({
         if (user.id === userId) {
           return {
             ...user,
-            directChats: user.directChats.map((chat) => {
+            chatRooms: user.chatRooms.map((chat) => {
               if (chat.id === chatId) {
                 return {
                   ...chat,
@@ -301,14 +81,22 @@ const createUsersSlice = (set, get) => ({
             }),
           };
         }
+        // if (user.id === userId2) {
+        //   return {
+        //     ...user,
+        //     chatRooms: user.chatRooms.map((chat) => {
+        //       if (chat.id === chatId) {
+        //         return {
+        //           ...chat,
+        //           messages: [...chat.messages, message],
+        //         };
+        //       }
+        //       return chat;
+        //     }),
+        //   };
+        // }
         return user;
       });
-      const selectedChat = state.selectedChat;
-
-      if (selectedChat.id === chatId) {
-        state.selectedChatMessages = [...state.selectedChatMessages, message];
-      }
-
       return { users };
     }),
 

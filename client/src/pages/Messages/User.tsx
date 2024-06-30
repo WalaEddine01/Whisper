@@ -1,5 +1,3 @@
-import React from 'react';
-import { arrayToHashMap } from '../../utils/utils';
 import styled from 'styled-components';
 import useAppStore from '../../Store';
 
@@ -26,16 +24,15 @@ const Name = styled.h2`
 `;
 
 const User = () => {
-  const userId = useAppStore((state) => state.userId);
   const isSmall = useAppStore((state) => state.isSmall);
-  const users = useAppStore((state) => state.users);
-  const user = arrayToHashMap(users, 'id')[userId];
+  const user = useAppStore((state) => state.user);
+
   return (
     <UserDiv isSmall={isSmall}>
       <Image>
         <img src="" alt="" />
       </Image>
-      <Name>{user.name}</Name>
+      <Name>{user.username}</Name>
     </UserDiv>
   );
 };

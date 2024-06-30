@@ -5,15 +5,19 @@ import {
   createBrowserRouter,
   useLocation,
 } from 'react-router-dom';
+import { ThemeProvider, createTheme } from '@mui/material';
 import { useEffect, useState } from 'react';
 
 import About from './pages/About/About';
+import { ApolloProvider } from '@apollo/client';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import Logout from './pages/Logout/Logout';
 import Messages from './pages/Messages/Messages';
+import ProtectedPages from './pages/ProtectedPages';
 import Root from './pages/Root';
 import Signup from './pages/Signup/Signup';
+import { client } from './graphqlClient';
 import useAppStore from './Store';
 
 const router = createBrowserRouter([
@@ -27,7 +31,11 @@ const router = createBrowserRouter([
       },
       {
         path: 'login',
-        element: <Login />,
+        element: (
+          <ProtectedPages requiredIn={false}>
+            <Login />
+          </ProtectedPages>
+        ),
       },
       {
         path: 'about',
@@ -35,22 +43,42 @@ const router = createBrowserRouter([
       },
       {
         path: 'signup',
-        element: <Signup />,
+        element: (
+          <ProtectedPages requiredIn={false}>
+            <Signup />
+          </ProtectedPages>
+        ),
       },
       {
         path: 'logout',
-        element: <Logout />,
+        element: (
+          <ProtectedPages requiredIn={true}>
+            <Logout />
+          </ProtectedPages>
+        ),
       },
       {
         path: 'messages',
-        element: <Messages />,
+        element: (
+          <ProtectedPages requiredIn={true}>
+            <Messages />
+          </ProtectedPages>
+        ),
       },
     ],
   },
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  const theme = createTheme();
+
+  return (
+    <ApolloProvider client={client}>
+      <ThemeProvider theme={theme}>
+        <RouterProvider router={router} />
+      </ThemeProvider>
+    </ApolloProvider>
+  );
 }
 
 export default App;

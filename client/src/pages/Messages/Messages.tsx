@@ -1,10 +1,11 @@
+import React, { useEffect } from 'react';
+
 import Chats from './Chats';
 import { Container } from '../../styles/GlobalStyledElements';
 import Details from './Details';
 import Panel from './Panel';
 import styled from 'styled-components';
 import useAppStore from '../../Store';
-import { useEffect } from 'react';
 
 const MessagesContainer = styled.div`
   display: flex;
@@ -16,13 +17,13 @@ const MessagesContainer = styled.div`
 `;
 
 const Messages = () => {
-  const selectedDetails = useAppStore((state) => state.selectedDetails);
-  const selectedChat = useAppStore((state) => state.selectedChat);
   const isSmall = useAppStore((state) => state.isSmall);
+  const selectedChat = useAppStore((state) => state.selectedChat);
+  const selectedDetails = useAppStore((state) => state.selectedDetails);
 
   return (
-    <Container>
-      <MessagesContainer isSmall={isSmall}>
+    <Container isSmall={isSmall}>
+      <MessagesContainer>
         {isSmall && selectedChat ? '' : <Chats />}
         {(isSmall && !selectedChat) || (isSmall && selectedDetails) ? (
           ''
