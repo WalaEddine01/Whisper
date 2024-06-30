@@ -38,7 +38,7 @@ export const typeDefs = ` #graphql
     }
 
     type Mutation {
-        createChatRoom(name: String, type: String!, users: [ID]!): ChatRoom
+        createChatRoom(name: String, type: String!, userIds: [ID!]!): ChatRoom
         createMessage(senderId: ID!, content: String!, chatRoomId: ID!): Message
     }
 `;
