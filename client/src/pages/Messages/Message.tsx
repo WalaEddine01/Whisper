@@ -96,7 +96,7 @@ const Message = ({ message, selectedChatType }) => {
                 <>
                   <span>-</span>
                   <User>{message.sender.id}</User>
-                </>,
+                </>
               )}
           </Details>
         )}

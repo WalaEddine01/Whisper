@@ -9,11 +9,11 @@ const userSchema = new mongoose.Schema({
     unique: [true, 'This username is already taken'],
     minlength: [4, 'Your username should be at least 4 letters long'],
     validate: {
-      validator: function(v) {
+      validator(v) {
         return validator.isAlphanumeric(v, 'en-US', { ignore: '_-' });
       },
-      message: 'Usernames must be alphanumeric and can include underscores and hyphens.'
-    }
+      message: 'Usernames must be alphanumeric and can include underscores and hyphens.',
+    },
   },
   email: {
     type: String,
@@ -45,7 +45,7 @@ userSchema.statics.login = async function login(loginCredential, password) {
   }
 
   const isEmail = loginCredential.includes('@');
-  let query = isEmail ? { email: loginCredential } : { username: loginCredential };
+  const query = isEmail ? { email: loginCredential } : { username: loginCredential };
 
   const user = await this.findOne(query);
   if (user) {

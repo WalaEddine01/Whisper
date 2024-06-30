@@ -3,15 +3,15 @@ import express from 'express';
 import { resolvers } from './api/resolvers';
 import router from './routes/index';
 import { typeDefs } from './api/schemas';
+
 const cors = require('cors');
 
 const app = express();
 app.use(
   cors({
-    origin: 'http://localhost:8000',
+    origin: '*',
     credentials: true,
   }),
-  // cors(),
 );
 
 const server = new ApolloServer({
@@ -28,7 +28,6 @@ const PORT = 5000;
 const server2 = app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}${server.graphqlPath}`);
 });
-
 
 const io = require('socket.io')(server2, {
   pingTimeout: 60000,

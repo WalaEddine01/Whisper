@@ -53,7 +53,6 @@ class AuthController {
     }
   }
 
-
   static async logout(request, response) {
     response.cookie('jwt', '', { maxAge: 1 });
     response.status(201).json({ msg: '' });
@@ -70,7 +69,7 @@ class AuthController {
     }
 
     try {
-      const user = await User.login(loginCredential, password);  
+      const user = await User.login(loginCredential, password);
       console.log(user);
       console.log(user.email);
       console.log(user.password);
@@ -82,7 +81,6 @@ class AuthController {
       response.status(400).json(errorJson);
     }
   }
-
 }
 
 module.exports = AuthController;
