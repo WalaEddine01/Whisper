@@ -3,6 +3,11 @@ import validator from 'validator';
 import bcrypt from 'bcrypt';
 
 const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, 'You need a name to sign up'],
+    minlength: [4, 'Your name should be at least 4 letters long'],
+  },
   username: {
     type: String,
     required: [true, 'You need a username to sign up'],
@@ -28,6 +33,10 @@ const userSchema = new mongoose.Schema({
   },
   isVerfied: {
     type: Boolean, default: false,
+  },
+  imgURL: {
+    type: String,
+    default: 'https://static.vecteezy.com/system/resources/thumbnails/002/387/693/small/user-profile-icon-free-vector.jpg',
   },
   createdAt: { type: Date, default: Date.now },
   chatRooms: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ChatRoom' }],

@@ -1,10 +1,12 @@
 export const typeDefs = ` #graphql
     type User {
     id: ID!
+    name: String!
     username: String!
     email: String!
     password: String!
     isVerfied: Boolean!
+    imgURL: String
     createdAt: String!
     chatRooms: [ChatRoom]!
   }

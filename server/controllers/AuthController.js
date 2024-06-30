@@ -42,8 +42,8 @@ const createToken = (id) => jwt.sign({ id }, 'a secret to change later', { expir
 class AuthController {
   static async signupPost(request, response) {
     try {
-      const { email, password, username } = request.body;
-      const newUser = await User.create({ email, password, username });
+      const { name, email, password, username } = request.body;
+      const newUser = await User.create({ name, email, password, username });
       const token = createToken(newUser._id);
       response.cookie('jwt', token, { httpOnly: true, maxAge: exDate * 1000 });
       response.status(201).json({ user: newUser._id });
