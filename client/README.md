@@ -1,4 +1,4 @@
-# Whisper Client
+# Whisper Client.
 
 Welcome to the Whisper Client. This project is built using the React ecosystem and several modern libraries to ensure a smooth and efficient development experience.
 
