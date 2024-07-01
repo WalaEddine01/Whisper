@@ -11,6 +11,8 @@ import styled from 'styled-components';
 import useAppStore from '../../Store';
 import { useLazyQuery } from '@apollo/client';
 
+import { socket } from '../../utils/socket';
+
 const MessageDiv = styled.div`
   /* border-radius: 4px; */
   outline: none;
@@ -113,6 +115,12 @@ const MessageInput = () => {
       variables: { id: userId },
     });
     console.log(userData.user);
+
+    socket.emit('sendMessage', {
+      chatRoomId: selectedChat.id,
+      message: messageData.createMessage,
+    });
+
     setUser(userData.user);
     const { data } = await getSelectedRoom({
       variables: { id: selectedChat.id },
@@ -132,7 +140,8 @@ const MessageInput = () => {
   };
 
   if (selectedChatMode === 'discover') return null;
-
+  
+  const userdata2 = selectedChat.users.filter((user) => user.id !== userId)[0].username;
   return (
     <form onSubmit={handleSubmit}>
       <MessageDiv isSmall={isSmall}>
@@ -145,7 +154,7 @@ const MessageInput = () => {
         {isTyping && (
           <Typing>
             <TypingLoader />
-            <TypingP>Amr is typing...</TypingP>
+            <TypingP> { userdata2 } is typing...</TypingP>
           </Typing>
         )}
       </MessageDiv>

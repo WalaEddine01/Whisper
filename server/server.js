@@ -37,26 +37,21 @@ const io = require('socket.io')(server2, {
 });
 
 
-const userSockets = {};
-
 io.on('connection', (socket) => {
-  const userId = socket.handshake.query.userId;
-  console.log(`A user connected: ${userId} with socket ID: ${socket.id}`);
+  console.log(`A user with socket ID: ${socket.id}`);
 
-
-  userSockets[userId] = socket.id;
-
-  socket.on('disconnect', () => {
-    console.log(`User disconnected: ${userId}`);
-
-    delete userSockets[userId];
+  socket.on('joinChatRoom', (chatRoomId) => {
+    socket.join(chatRoomId);
+    console.log(`User ${socket.id} joined chat room ${chatRoomId}`);
   });
 
+  socket.on('sendMessage', (messageData) => {
+    const { chatRoomId, message } = messageData;
+    socket.to(chatRoomId).emit('receiveMessage', message);
+    console.log(`Message sent to chat room ${chatRoomId}:`, message);
+  });
 
-  socket.on('sendMessage', ({ recipientId, message }) => {
-    const recipientSocketId = userSockets[recipientId];
-    if (recipientSocketId) {
-      io.to(recipientSocketId).emit('receiveMessage', { message, senderId: userId });
-    }
+  socket.on('disconnect', () => {
+    console.log(`User disconnected: ${socket.id}`);
   });
 });
