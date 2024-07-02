@@ -5,11 +5,11 @@ import { CREATE_CHAT_ROOM } from '../../GraphQl/mutations';
 import { GET_CURRENT_USER } from '../../GraphQl/queries';
 import Message from './Message';
 import { arrayToHashMap } from '../../utils/utils';
+import { client } from '../../graphqlClient';
+import { socket } from '../../utils/socket';
 import styled from 'styled-components';
 import useAppStore from '../../Store';
 import { useEffect } from 'react';
-
-import { socket } from '../../utils/socket';
 
 const BodyDiv = styled.div`
   padding: 32px;
@@ -220,12 +220,18 @@ const PanelBody = () => {
     console.log(state);
   }, [state]);
 
-  const [
-    getUser,
-    { loading: userLoading, error: errorLoading, data: dataLoading },
-  ] = useLazyQuery(GET_CURRENT_USER);
+  // const [
+  //   getUser,
+  //   { loading: userLoading, error: errorLoading, data: dataLoading },
+  // ] = useLazyQuery(GET_CURRENT_USER, {
+  //   fetchPolicy: 'no-cache',
+  //   pollInterval: 0,
+  //   onCompleted: () => {},
+  // });
 
-  console.log(selectedChat);
+  const [getUser] = useLazyQuery(GET_CURRENT_USER);
+
+  // console.log(selectedChat);
 
   function handleChangeUserSearchQuery(event) {
     setUserSearchQuery(event.target.value);
@@ -256,8 +262,11 @@ const PanelBody = () => {
     setUser(userNewData.user);
     updateSelectedChat(response.data.createChatRoom.id);
 
-    console.log("Joining chat room ----------", response.data.createChatRoom.id);
-    
+    console.log(
+      'Joining chat room ----------',
+      response.data.createChatRoom.id,
+    );
+
     socket.emit('joinChatRoom', response.data.createChatRoom.id);
     // setSelectedChatMessages([]);
     // addChat(
@@ -281,7 +290,7 @@ const PanelBody = () => {
       ],
       awaitRefetchQueries: true,
     });
-    console.log(response.data.createChatRoom);
+    // console.log(response.data.createChatRoom);
     setSelectedChatMode('yours');
     setSelectedModeType('yours');
     setSelectedTabType('groups');
@@ -539,10 +548,23 @@ const PanelBody = () => {
   }
 
   if (selectedChat) {
-    socket.on('receiveMessage', (message) => {
-      console.log("-----*************------");
+    socket.on('receiveMessage', async (message) => {
+      console.log('-----*************------');
       console.log(message);
-      console.log("-----*************------");
+      console.log('-----*************------');
+
+      // client.clearStore();
+
+      const { data: userNewData } = await getUser({
+        variables: { id: userId },
+      });
+
+      console.log(userNewData);
+
+      setUser(userNewData.user);
+      updateSelectedChat(message.chatRoom.id);
+      console.log(userNewData.user);
+      console.log('USER IS UPDATED');
     });
 
     return (

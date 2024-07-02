@@ -64,7 +64,6 @@ const Details = styled.div`
 `;
 
 const Message = ({ message, selectedChatType }) => {
-  console.log(selectedChatType);
   const userId = useAppStore((state) => state.userId);
   const [isDetailed, setIsDetailed] = useState(false);
 
@@ -72,13 +71,11 @@ const Message = ({ message, selectedChatType }) => {
     setIsDetailed((oldDetailed) => !oldDetailed);
   }
 
-  console.log(message);
-
   return (
     <li>
       <MessageDiv me={message.sender.id === userId}>
         <MessageRow>
-          {selectedChatType === 'group' && (userId !== message.sender.id) && (
+          {selectedChatType === 'group' && userId !== message.sender.id && (
             <Image me={message.sender.id === userId} />
           )}
           <MessageButton
@@ -92,12 +89,12 @@ const Message = ({ message, selectedChatType }) => {
             me={message.sender.id === userId}
             group={selectedChatType === 'group'}>
             <Time me={message.sender.id === userId}>{message.createdAt}</Time>
-            {selectedChatType === 'group' && (userId !== message.sender.id) && (
-                <>
-                  <span>-</span>
-                  <User>{message.sender.id}</User>
-                </>
-              )}
+            {selectedChatType === 'group' && userId !== message.sender.id && (
+              <>
+                <span>-</span>
+                <User>{message.sender.id}</User>
+              </>
+            )}
           </Details>
         )}
       </MessageDiv>

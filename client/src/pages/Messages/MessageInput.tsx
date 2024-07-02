@@ -7,11 +7,10 @@ import React from 'react';
 import TypingLoader from '../../components/Loaders/TypingLoader';
 import { arrayToHashMap } from '../../utils/utils';
 import { client } from '../../graphqlClient';
+import { socket } from '../../utils/socket';
 import styled from 'styled-components';
 import useAppStore from '../../Store';
 import { useLazyQuery } from '@apollo/client';
-
-import { socket } from '../../utils/socket';
 
 const MessageDiv = styled.div`
   /* border-radius: 4px; */
@@ -77,7 +76,21 @@ const MessageInput = () => {
 
   const [mutateFunction] = useMutation(CREATE_MESSAGE);
   const [getSelectedRoom] = useLazyQuery(GET_CHAT_ROOM);
-  const [getUser] = useLazyQuery(GET_CURRENT_USER);
+  // const [getUser, { loading, error, data }] = useLazyQuery(GET_CURRENT_USER, {
+  //   fetchPolicy: 'network-only', // Ensures the query always hits the network for fresh data
+  //   onCompleted: (data) => {
+  //     if (data && data.user) {
+  //       setUser(data.user);
+  //       // Perform other actions with the retrieved data
+  //     }
+  //   },
+  //   onError: (error) => {
+  //     console.error('Error fetching user data:', error);
+  //     // Optionally set an error state or handle the error gracefully
+  //   },
+  // });
+
+  const [getUser, { loading, error, data }] = useLazyQuery(GET_CURRENT_USER);
 
   // useEffect(() => {
   //   if (selectedRoom) {
@@ -97,6 +110,8 @@ const MessageInput = () => {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    // client.clearStore();
+
     const { data: messageData } = await mutateFunction({
       variables: {
         senderId: userId,
@@ -111,10 +126,12 @@ const MessageInput = () => {
       ],
       awaitRefetchQueries: true,
     });
+    // client.clearStore();
+
     const { data: userData } = await getUser({
       variables: { id: userId },
     });
-    console.log(userData.user);
+    // console.log(userData.user);
 
     socket.emit('sendMessage', {
       chatRoomId: selectedChat.id,
@@ -122,12 +139,12 @@ const MessageInput = () => {
     });
 
     setUser(userData.user);
-    const { data } = await getSelectedRoom({
+    const { data: newD } = await getSelectedRoom({
       variables: { id: selectedChat.id },
     });
-    console.log(data.chatRoom);
+    console.log(newD.chatRoom);
     setInputValue('');
-    updateSelectedChat(data.chatRoom.id);
+    updateSelectedChat(newD.chatRoom.id);
   }
 
   const handleInputChange = (e) => setInputValue(e.target.value);
@@ -140,8 +157,9 @@ const MessageInput = () => {
   };
 
   if (selectedChatMode === 'discover') return null;
-  
-  const userdata2 = selectedChat.users.filter((user) => user.id !== userId)[0].username;
+
+  const userdata2 = selectedChat.users.filter((user) => user.id !== userId)[0]
+    .username;
   return (
     <form onSubmit={handleSubmit}>
       <MessageDiv isSmall={isSmall}>
@@ -154,7 +172,7 @@ const MessageInput = () => {
         {isTyping && (
           <Typing>
             <TypingLoader />
-            <TypingP> { userdata2 } is typing...</TypingP>
+            <TypingP> {userdata2} is typing...</TypingP>
           </Typing>
         )}
       </MessageDiv>
