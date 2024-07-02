@@ -42,25 +42,32 @@ const uploadFile = () => {
         console.error('User not found');
         return res.status(404).send('User not found');
       }
+        upload(req, res, async function (err) {
+          // Check if the user is logged in using res.locals
+          if (!res.locals.user) {
+            console.error('No user logged in.');
+            return res.status(401).send('Please log in first.');
+          }
 
-      upload(req, res, async function (err) {
-        if (err instanceof multer.MulterError) {
-          console.error('MulterError:', err);
-          return res.status(500).send(err.message);
-        } else if (err) {
-          console.error('Unknown Error:', err);
-          return res.status(500).send(err.message);
-        }
-        try {
-          const filePath = `/public/uploads/${req.file.filename}`;
-          await User.findByIdAndUpdate(userId, { imgPath: filePath });
-          console.log('File uploaded and user updated successfully.');
-          res.send('File uploaded and user updated successfully');
-        } catch (updateError) {
-          console.error('Error updating user:', updateError);
-          return res.status(500).send(updateError.message);
-        }
-      });
+          if (err instanceof multer.MulterError) {
+            console.error('MulterError:', err);
+            return res.status(500).send(err.message);
+          } else if (err) {
+            console.error('Unknown Error:', err);
+            return res.status(500).send(err.message);
+          }
+          try {
+            const filePath = `/public/uploads/${req.file.filename}`;
+            // Use the user ID from res.locals.user assuming it stores user information
+            const userId = res.locals.user._id;
+            await User.findByIdAndUpdate(userId, { imgPath: filePath });
+            console.log('File uploaded and user updated successfully.');
+            res.send({ message: 'File uploaded and user updated successfully', filePath: filePath });
+          } catch (updateError) {
+            console.error('Error updating user:', updateError);
+            return res.status(500).send(updateError.message);
+          }
+        });
     } catch (err) {
       console.error('Error finding user:', err);
       return res.status(500).send(err.message);
