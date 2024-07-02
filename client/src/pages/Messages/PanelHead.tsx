@@ -4,11 +4,12 @@ import styled from 'styled-components';
 import useAppStore from '../../Store';
 
 const Image = styled.div`
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background-color: green;
   flex-shrink: 0;
+  overflow: hidden;
 `;
 
 const UserRow = styled.button`
@@ -125,21 +126,27 @@ const PanelHead = () => {
   }
 
   if (selectedChat) {
+    const otherUser = selectedChat.users.filter(
+      (user) => user.id !== userId,
+    )[0];
     return (
       <HeadRow>
         <BackAndUser>
           <BackButton color={'var(--mainTextColor'} onClick={handleBackClick} />
           <UserRow onClick={() => handleHeadClick()}>
-            <Image />
+            <Image>
+              <img
+                src={`http://localhost:5000/${
+                  otherUser.imgPath.startsWith('/')
+                    ? otherUser.imgPath.slice(1)
+                    : otherUser.imgPath.startsWith('.')
+                    ? otherUser.imgPath.slice(2)
+                    : otherUser.imgPath
+                }`}
+              />
+            </Image>
             <Text>
-              {selectedChat.type === 'one-to-one' && (
-                <h1>
-                  {
-                    selectedChat.users.filter((user) => user.id !== userId)[0]
-                      .username
-                  }
-                </h1>
-              )}
+              {selectedChat.type === 'one-to-one' && <h1>{otherUser.name}</h1>}
 
               <Type>
                 {selectedChatType === 'direct'

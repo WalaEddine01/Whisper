@@ -124,7 +124,7 @@ const Select = styled.select`
 
 const SuggestionsList = styled.ul`
   background-color: var(--mainColor);
-  max-height: 160px;
+  max-height: 180px;
   overflow: auto;
 `;
 
@@ -167,15 +167,20 @@ const CloseButton = styled.button`
   top: -12px;
 `;
 
-const NameDiv = styled.div`
-  display: flex;
-  gap: 0px;
-  align-items: center;
-  flex-direction: column;
+const Name = styled.h2`
+  font-weight: 600;
 `;
 
-const UserName = styled.p`
-  font-size: 12px;
+const NameDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  justify-content: center;
+  align-items: flex-start;
+`;
+
+const UserName = styled.span`
+  font-size: 13px;
   color: var(--mainTextColorLight);
 `;
 
@@ -374,7 +379,10 @@ const PanelBody = () => {
       const lowercasedQuery = userSearchQuery?.toLowerCase() || '';
       console.log(directChatUser);
       console.log(selectedUsers);
-      return directChatUser.username.toLowerCase().includes(lowercasedQuery);
+      return (
+        directChatUser.username.toLowerCase().includes(lowercasedQuery) ||
+        directChatUser.name.toLowerCase().includes(lowercasedQuery)
+      );
     });
 
     if (managementAction === 'addGroup') {
@@ -383,7 +391,9 @@ const PanelBody = () => {
           <Input type="text" name="name" placeholder="Name" />
           <Select name="policy" id="">
             <option value="private">private</option>
-            <option value="public">public</option>
+            <option value="public" disabled>
+              public
+            </option>
           </Select>
           <div>
             <Input
@@ -401,10 +411,18 @@ const PanelBody = () => {
                     <SuggestionsListButton
                       onClick={(e) => handleAddToSelected(e, user)}>
                       <Image>
-                        <img src="" alt="" />
+                        <img
+                          src={`http://localhost:5000/${
+                            user.imgPath.startsWith('/')
+                              ? user.imgPath.slice(1)
+                              : user.imgPath.startsWith('.')
+                              ? user.imgPath.slice(2)
+                              : user.imgPath
+                          }`}
+                        />
                       </Image>
                       <NameDiv>
-                        <p>{user.name}</p>
+                        <Name>{user.name}</Name>
                         <UserName>@{user.username}</UserName>
                       </NameDiv>
                     </SuggestionsListButton>
@@ -422,7 +440,15 @@ const PanelBody = () => {
                     &times;
                   </CloseButton>
                   <Image>
-                    <img src="" alt="" />
+                    <img
+                      src={`http://localhost:5000/${
+                        user.imgPath.startsWith('/')
+                          ? user.imgPath.slice(1)
+                          : user.imgPath.startsWith('.')
+                          ? user.imgPath.slice(2)
+                          : user.imgPath
+                      }`}
+                    />
                   </Image>
                   <NameDiv>
                     <p>{user.name}</p>

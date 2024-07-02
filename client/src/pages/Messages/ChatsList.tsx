@@ -74,7 +74,7 @@ const ChatsList = ({ searchQuery }) => {
     const lowercasedQuery = searchQuery?.toLowerCase() || '';
     // console.log(discoveredUser);
     return (
-      // discoveredUser.name.toLowerCase().includes(lowercasedQuery) ||
+      discoveredUser.name.toLowerCase().includes(lowercasedQuery) ||
       discoveredUser.username.toLowerCase().includes(lowercasedQuery)
     );
   });
@@ -84,14 +84,15 @@ const ChatsList = ({ searchQuery }) => {
       chat.users.some((user) => {
         const lowercasedQuery = searchQuery?.toLowerCase() || '';
         return (
-          user.username.toLowerCase().includes(lowercasedQuery) &&
+          (user.name.toLowerCase().includes(lowercasedQuery) ||
+            user.username.toLowerCase().includes(lowercasedQuery)) &&
           user.id !== userId
         );
       }),
     )
     .flat();
 
-  // console.log(filteredDirectUsers);
+  console.log(filteredDirectChats);
 
   const filteredDiscoveredGroups = discoveringGroups.filter(
     (discoveredGroup) => {
@@ -180,6 +181,7 @@ const ChatsList = ({ searchQuery }) => {
       <ChatsItems isSmall={isSmall}>
         <ChatsListStyled>
           {filteredGroupChats.map((chat, index) => {
+            console.log(chat);
             return (
               <ChatItem
                 key={chat.id}

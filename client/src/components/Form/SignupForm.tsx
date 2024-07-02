@@ -107,6 +107,9 @@ const SignupForm = ({ isLoading, setIsLoading }) => {
     const res = await signUp(data);
     const res2 = await sendImage();
 
+    console.log(res);
+    console.log(res2);
+
     setUserId(res.user);
     initializeSocket(res.user);
 
@@ -117,6 +120,7 @@ const SignupForm = ({ isLoading, setIsLoading }) => {
     const { data: usersData } = await getUsers();
 
     console.log(userData);
+    console.log(usersData);
     setUser(userData.user);
     setUsers(usersData.users);
     setManagementAction(false);

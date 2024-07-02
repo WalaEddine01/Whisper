@@ -8,6 +8,7 @@ const Image = styled.div`
   height: 64px;
   border-radius: 50%;
   background-color: green;
+  overflow: hidden;
 `;
 
 const HeadRow = styled.button`
@@ -34,18 +35,26 @@ const DetailsBody = () => {
   const selectedChatType = useAppStore((state) => state.selectedChatType);
   const userId = useAppStore((state) => state.userId);
 
+  const otherUser = selectedDetails.users.filter(
+    (user) => user.id !== userId,
+  )[0];
+
   return (
     <HeadRow>
-      <Image />
+      <Image>
+        <img
+          src={`http://localhost:5000/${
+            otherUser.imgPath.startsWith('/')
+              ? otherUser.imgPath.slice(1)
+              : otherUser.imgPath.startsWith('.')
+              ? otherUser.imgPath.slice(2)
+              : otherUser.imgPath
+          }`}
+        />
+      </Image>
       <p>{selectedDetails.user?.name || selectedDetails.name}</p>
       {selectedChatType === 'direct' ? (
-        <UserName>
-          @
-          {
-            selectedDetails.users.filter((user) => user.id !== userId)[0]
-              .username
-          }
-        </UserName>
+        <UserName>@{otherUser.username}</UserName>
       ) : (
         <UserName>{selectedDetails.policy}</UserName>
       )}
