@@ -90,7 +90,9 @@ const MessageInput = () => {
   //   },
   // });
 
-  const [getUser, { loading, error, data }] = useLazyQuery(GET_CURRENT_USER);
+  const [getUser] = useLazyQuery(GET_CURRENT_USER, {
+    fetchPolicy: 'no-cache',
+  });
 
   // useEffect(() => {
   //   if (selectedRoom) {

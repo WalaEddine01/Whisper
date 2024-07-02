@@ -220,16 +220,11 @@ const PanelBody = () => {
     console.log(state);
   }, [state]);
 
-  // const [
-  //   getUser,
-  //   { loading: userLoading, error: errorLoading, data: dataLoading },
-  // ] = useLazyQuery(GET_CURRENT_USER, {
-  //   fetchPolicy: 'no-cache',
-  //   pollInterval: 0,
-  //   onCompleted: () => {},
-  // });
+  const [getUser] = useLazyQuery(GET_CURRENT_USER, {
+    fetchPolicy: 'no-cache',
+  });
 
-  const [getUser] = useLazyQuery(GET_CURRENT_USER);
+  // const [getUser] = useLazyQuery(GET_CURRENT_USER);
 
   // console.log(selectedChat);
 
