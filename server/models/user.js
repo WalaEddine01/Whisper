@@ -34,9 +34,9 @@ const userSchema = new mongoose.Schema({
   isVerfied: {
     type: Boolean, default: false,
   },
-  imgURL: {
+  imgPath: {
     type: String,
-    default: 'https://static.vecteezy.com/system/resources/thumbnails/002/387/693/small/user-profile-icon-free-vector.jpg',
+    default: './public/uploads/default.jpg',
   },
   createdAt: { type: Date, default: Date.now },
   chatRooms: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ChatRoom' }],
