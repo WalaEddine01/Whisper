@@ -3,7 +3,8 @@ import express from 'express';
 import { resolvers } from './api/resolvers';
 import router from './routes/index';
 import { typeDefs } from './api/schemas';
-
+import { checkUser } from './middleware/authMiddleware';
+import cookieParser from 'cookie-parser';
 const cors = require('cors');
 
 const app = express();
@@ -22,8 +23,9 @@ const server = new ApolloServer({
 server.start().then(() => server.applyMiddleware({ app }));
 
 app.use(express.json());
+app.use(cookieParser());
+app.use(checkUser);
 app.use('/', router);
-
 const PORT = 5000;
 const server2 = app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}${server.graphqlPath}`);
