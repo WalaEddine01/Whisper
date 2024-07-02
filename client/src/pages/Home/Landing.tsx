@@ -1,5 +1,6 @@
+import React, { useEffect } from 'react';
+
 import { ContainerMin } from '../../styles/GlobalStyledElements';
-import React from 'react';
 import styled from 'styled-components';
 import useAppStore from '../../Store';
 import { useNavigate } from 'react-router-dom';

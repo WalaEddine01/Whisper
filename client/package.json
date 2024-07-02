@@ -17,6 +17,8 @@
     "apollo-link-rest": "^0.9.0",
     "axios": "^1.7.2",
     "graphql": "^15.8.0",
+    "js-cookie": "^3.0.5",
+    "jwt-decode": "^4.0.0",
     "qs": "^6.12.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

@@ -1,10 +1,14 @@
 import { Error, FormElement, Image, Input, InputDiv, Submit } from './Form';
+import { GET_CURRENT_USER, GET_USERS } from '../../GraphQl/queries';
 
 import { Skeleton } from '@mui/material';
 import axios from 'axios';
 import axiosInstance from '../../AxiosInstance';
+import { initializeSocket } from '../../utils/socket';
 import toast from 'react-hot-toast';
+import useAppStore from '../../Store';
 import { useForm } from 'react-hook-form';
+import { useLazyQuery } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
@@ -15,8 +19,26 @@ const SignupForm = ({ isLoading, setIsLoading }) => {
     watch,
     formState: { errors },
   } = useForm();
+  const [getUser] = useLazyQuery(GET_CURRENT_USER, {
+    fetchPolicy: 'no-cache',
+  });
+  const [getUsers] = useLazyQuery(GET_USERS, {
+    fetchPolicy: 'no-cache',
+  });
+
   const navigate = useNavigate();
   const [imageSrc, setImageSrc] = useState('');
+  const setUser = useAppStore((state) => state.setUser);
+  const setUserId = useAppStore((state) => state.setUserId);
+  const setUsers = useAppStore((state) => state.setUsers);
+  const setManagementAction = useAppStore((state) => state.setManagementAction);
+  const setManagementMode = useAppStore((state) => state.setManagementMode);
+  const setSelectedChatMode = useAppStore((state) => state.setSelectedChatMode);
+  const setSelectedModeType = useAppStore((state) => state.setSelectedModeType);
+  const setSelectedDetails = useAppStore((state) => state.setSelectedDetails);
+  const setSelectedChatType = useAppStore((state) => state.setSelectedChatType);
+  const setSelectedTabType = useAppStore((state) => state.setSelectedTabType);
+  const setSelectedChat = useAppStore((state) => state.setSelectedChat);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -60,8 +82,29 @@ const SignupForm = ({ isLoading, setIsLoading }) => {
 
   async function onSubmit(data) {
     const res = await signUp(data);
+    setUserId(res.user);
+    initializeSocket(res.user);
+
+    const { data: userData } = await getUser({
+      variables: { id: res.user },
+    });
+
+    const { data: usersData } = await getUsers();
+
+    console.log(userData);
+    setUser(userData.user);
+    setUsers(usersData.users);
+    setManagementAction(false);
+    setManagementMode(false);
+    setSelectedChatMode(null);
+    setSelectedModeType('yours');
+    setSelectedDetails(null);
+    setSelectedChatType(null);
+    setSelectedTabType('direct');
+    setSelectedChat(null);
+
     toast.success('Account Created Successfully!');
-    navigate('/login');
+    navigate('/messages');
     console.log(res);
   }
 
