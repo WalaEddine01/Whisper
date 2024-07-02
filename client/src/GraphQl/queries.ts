@@ -28,6 +28,7 @@ export const GET_CURRENT_USER = gql`
     user(id: $id) {
       id
       username
+      imgPath
       chatRooms {
         id
         type

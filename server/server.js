@@ -1,16 +1,16 @@
 import { ApolloServer } from 'apollo-server-express';
+import { checkUser } from './middleware/authMiddleware';
+import cookieParser from 'cookie-parser';
 import express from 'express';
 import { resolvers } from './api/resolvers';
 import router from './routes/index';
 import { typeDefs } from './api/schemas';
-import { checkUser } from './middleware/authMiddleware';
-import cookieParser from 'cookie-parser';
 const cors = require('cors');
 
 const app = express();
 app.use(
   cors({
-    origin: '*',
+    origin: 'http://localhost:8000',
     credentials: true,
   }),
 );

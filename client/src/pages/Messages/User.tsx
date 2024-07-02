@@ -30,7 +30,7 @@ const User = () => {
   return (
     <UserDiv isSmall={isSmall}>
       <Image>
-        <img src={user.imgURL} alt="" />
+        <img src={`http://localhost:5000/public/${user.imgPath}`} alt="" />
       </Image>
       <Name>{user.username}</Name>
     </UserDiv>

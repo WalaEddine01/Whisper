@@ -45,6 +45,22 @@ export const Image = styled.div`
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background-color: red;
+  background-color: var(--mainColor);
+  color: var(--secondaryColor);
+  border: 2px solid var(--secondaryColor);
+  font-size: 24px;
+  overflow: hidden;
+  opacity: 0.5;
+  transition: 0.5s;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    opacity: 1;
+  }
 `;
+
+export const ImageLabel = styled.label``;
 
