@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import useAppStore from '../../Store';
 import { useEffect } from 'react';
 
+import { socket } from '../../utils/socket';
+
 const Image = styled.div`
   width: 24px;
   height: 24px;
@@ -49,6 +51,8 @@ const ChatItem = ({ chat, even, type }) => {
     if (chat.mode === 'discover') {
       setSelectedChat(chat);
     } else {
+      console.log("Joining chat room ------------", chat.id);
+      socket.emit('joinChatRoom', chat.id);
       updateSelectedChat(chat.id);
     }
     // setSelectedChatMessages(chat.messages);

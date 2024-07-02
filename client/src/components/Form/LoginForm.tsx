@@ -11,6 +11,8 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useQuery } from '@apollo/client';
 
+import { initializeSocket } from '../../utils/socket';
+
 const LoginForm = ({ isLoading, setIsLoading }) => {
   const {
     register,
@@ -64,9 +66,10 @@ const LoginForm = ({ isLoading, setIsLoading }) => {
 
   async function onSubmit(data) {
     try {
-      const res = await logIn(data);
+      let res = await logIn(data);
       console.log(res);
       setUserId(res.user);
+      initializeSocket(res.user);
       setUsers(usersData.users);
       setManagementAction(false);
       setManagementMode(false);

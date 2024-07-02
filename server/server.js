@@ -36,9 +36,22 @@ const io = require('socket.io')(server2, {
   },
 });
 
+
 io.on('connection', (socket) => {
-  console.log('A user connected = ', socket.id);
+  console.log(`A user with socket ID: ${socket.id}`);
+
+  socket.on('joinChatRoom', (chatRoomId) => {
+    socket.join(chatRoomId);
+    console.log(`User ${socket.id} joined chat room ${chatRoomId}`);
+  });
+
+  socket.on('sendMessage', (messageData) => {
+    const { chatRoomId, message } = messageData;
+    socket.to(chatRoomId).emit('receiveMessage', message);
+    console.log(`Message sent to chat room ${chatRoomId}:`, message);
+  });
+
   socket.on('disconnect', () => {
-    console.log('User disconnected');
+    console.log(`User disconnected: ${socket.id}`);
   });
 });

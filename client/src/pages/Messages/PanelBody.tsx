@@ -9,6 +9,8 @@ import styled from 'styled-components';
 import useAppStore from '../../Store';
 import { useEffect } from 'react';
 
+import { socket } from '../../utils/socket';
+
 const BodyDiv = styled.div`
   padding: 32px;
   overflow: auto;
@@ -253,6 +255,10 @@ const PanelBody = () => {
 
     setUser(userNewData.user);
     updateSelectedChat(response.data.createChatRoom.id);
+
+    console.log("Joining chat room ----------", response.data.createChatRoom.id);
+    
+    socket.emit('joinChatRoom', response.data.createChatRoom.id);
     // setSelectedChatMessages([]);
     // addChat(
     //   selectedChat.users.map((user) => user.id),
@@ -533,7 +539,11 @@ const PanelBody = () => {
   }
 
   if (selectedChat) {
-    console.log(selectedChat);
+    socket.on('receiveMessage', (message) => {
+      console.log("-----*************------");
+      console.log(message);
+      console.log("-----*************------");
+    });
 
     return (
       <BodyDiv>

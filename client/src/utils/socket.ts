@@ -1,15 +1,23 @@
-import { io } from 'socket.io-client';
+import { DefaultEventsMap } from '@socket.io/component-emitter';
+import { Socket, io } from 'socket.io-client';
 
 const SOCKET_URL = 'http://localhost:5000';
-const socket = io(SOCKET_URL);
+let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
 
+const initializeSocket = (userId: string) => {
+  socket = io(SOCKET_URL, {
+    query: { userId }
+  });
 
-socket.on("connect", () => {
-    console.log('Connected to server with ID: ' + socket.id);
-})
+  socket.on('connect', () => {
+    console.log('Connected to server with user ID:', userId);
+  });
 
-socket.on("disconnect", () => {
-    console.log('Disconnected from server' + socket.id);
-})
+  socket.on('disconnect', () => {
+    console.log('Disconnected from server with user ID:', userId);
+  });
 
-export default socket;
+  return socket;
+};
+
+export { socket, initializeSocket };
