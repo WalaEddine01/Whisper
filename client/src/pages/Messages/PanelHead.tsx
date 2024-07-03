@@ -147,6 +147,7 @@ const PanelHead = () => {
             </Image>
             <Text>
               {selectedChat.type === 'one-to-one' && <h1>{otherUser.name}</h1>}
+              {selectedChat.type === 'group' && <h1>{selectedChat.name}</h1>}
 
               <Type>
                 {selectedChatType === 'direct'
