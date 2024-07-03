@@ -240,6 +240,7 @@ const PanelBody = () => {
   async function handleAddDirect() {
     const response = await mutateFunction({
       variables: {
+        name: 'Direct Chat',
         type: 'one-to-one',
         userIds: selectedChat.users.map((user) => user.id),
       },
@@ -282,6 +283,7 @@ const PanelBody = () => {
     e.preventDefault();
     const response = await mutateFunction({
       variables: {
+        name: e.target.name.value,
         type: 'group',
         userIds: [userId, ...selectedUsers.map((user) => user.id)],
       },

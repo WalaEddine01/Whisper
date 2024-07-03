@@ -1,9 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const CREATE_CHAT_ROOM = gql`
-  mutation createChatRoom($type: String!, $userIds: [ID!]!, $name: String!) {
-    createChatRoom(type: $type, userIds: $userIds, name: $name) {
-      id
+  mutation createChatRoom($name: String!, $type: String!, $userIds: [ID!]!) {
+    createChatRoom(name: $name, type: $type, userIds: $userIds) {
       type
       name
       users {
