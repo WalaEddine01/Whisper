@@ -12,7 +12,7 @@ const cors = require('cors');
 const app = express();
 app.use(
   cors({
-    origin: '*',
+    origin: 'http://localhost:8000',
     credentials: true,
   }),
 );
