@@ -102,11 +102,11 @@ const ChatItem = ({ chat, even, type }) => {
         <Image>
           <img
             src={`http://localhost:5000/${
-              user.imgPath.startsWith('/')
-                ? user.imgPath.slice(1)
-                : user.imgPath.startsWith('.')
-                ? user.imgPath.slice(2)
-                : user.imgPath
+              otherUser.imgPath.startsWith('/')
+                ? otherUser.imgPath.slice(1)
+                : otherUser.imgPath.startsWith('.')
+                ? otherUser.imgPath.slice(2)
+                : otherUser.imgPath
             }`}
           />
         </Image>
