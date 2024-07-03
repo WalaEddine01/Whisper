@@ -100,12 +100,13 @@ const resolvers = {
     },
   },
   Mutation: {
-    createChatRoom: async (_, { type, userIds }) => {
+    createChatRoom: async (_, { name, type, userIds }) => {
       const users = await User.find({ _id: { $in: userIds } });
       if (type === 'one-to-one' && users.length !== 2) {
         throw new Error('One-to-one chat rooms must have exactly two users');
       }
       const chatRoom = new ChatRoom({
+        name,
         type,
         users,
         createdAt: new Date().toISOString(),
