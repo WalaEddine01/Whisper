@@ -25,7 +25,7 @@ const uploadFile = () => {
       cb(null, true);
     },
     limits: {
-      fileSize: 1024 * 1024 * 5 // 5 MB
+      fileSize: 1024 * 1024 * 10 // 10 MB
     }
   }).single('photo');
 
