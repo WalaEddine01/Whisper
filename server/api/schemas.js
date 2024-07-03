@@ -6,7 +6,7 @@ export const typeDefs = ` #graphql
     email: String!
     password: String!
     isVerfied: Boolean!
-    imgURL: String
+    imgPath: String
     createdAt: String!
     chatRooms: [ChatRoom]!
   }
@@ -42,3 +42,4 @@ export const typeDefs = ` #graphql
         createMessage(senderId: ID!, content: String!, chatRoomId: ID!): Message
     }
 `;
+

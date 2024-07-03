@@ -4,6 +4,8 @@ export const GET_USERS = gql`
   query GetUsers {
     users {
       id
+      name
+      imgPath
       username
       email
       chatRooms {
@@ -28,12 +30,17 @@ export const GET_CURRENT_USER = gql`
     user(id: $id) {
       id
       username
+      name
+      imgPath
       chatRooms {
         id
         type
+        name
         users {
           id
           username
+          name
+          imgPath
         }
         messages {
           id
@@ -60,11 +67,16 @@ export const GET_CHAT_ROOM = gql`
         createdAt
         sender {
           id
+          name
+          username
+          imgPath
         }
       }
       users {
         id
         username
+        imgPath
+        name
       }
     }
   }

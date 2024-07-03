@@ -1,16 +1,18 @@
 import { ApolloServer } from 'apollo-server-express';
+import { checkUser } from './middleware/authMiddleware';
+import cookieParser from 'cookie-parser';
 import express from 'express';
 import { resolvers } from './api/resolvers';
 import router from './routes/index';
 import { typeDefs } from './api/schemas';
-import { checkUser } from './middleware/authMiddleware';
-import cookieParser from 'cookie-parser';
+const path = require('path');
+
 const cors = require('cors');
 
 const app = express();
 app.use(
   cors({
-    origin: '*',
+    origin: 'http://localhost:8000',
     credentials: true,
   }),
 );
@@ -26,6 +28,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(checkUser);
 app.use('/', router);
+app.use('/public', express.static(path.join(__dirname, 'public')));
+
 const PORT = 5000;
 const server2 = app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}${server.graphqlPath}`);
@@ -37,7 +41,6 @@ const io = require('socket.io')(server2, {
     origin: '*',
   },
 });
-
 
 io.on('connection', (socket) => {
   console.log(`A user with socket ID: ${socket.id}`);
@@ -57,3 +60,4 @@ io.on('connection', (socket) => {
     console.log(`User disconnected: ${socket.id}`);
   });
 });
+

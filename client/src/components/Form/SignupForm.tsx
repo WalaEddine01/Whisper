@@ -28,6 +28,7 @@ const SignupForm = ({ isLoading, setIsLoading }) => {
 
   const navigate = useNavigate();
   const [imageSrc, setImageSrc] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
   const setUser = useAppStore((state) => state.setUser);
   const setUserId = useAppStore((state) => state.setUserId);
   const setUsers = useAppStore((state) => state.setUsers);
@@ -43,6 +44,7 @@ const SignupForm = ({ isLoading, setIsLoading }) => {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
+      setSelectedFile(file);
       setIsLoading(true);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -80,8 +82,34 @@ const SignupForm = ({ isLoading, setIsLoading }) => {
     }
   }
 
+  async function sendImage() {
+    if (imageSrc) {
+      try {
+        const formData = new FormData();
+        formData.append('photo', selectedFile);
+
+        const response = await axiosInstance.post('/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        console.log('File uploaded successfully:', response.data);
+        // Handle success, e.g., show a success message or update state
+      } catch (error) {
+        console.error('Error uploading file:', error);
+        // Handle error, e.g., show an error message to the user
+      }
+    }
+  }
+
   async function onSubmit(data) {
     const res = await signUp(data);
+    const res2 = await sendImage();
+
+    console.log(res);
+    console.log(res2);
+
     setUserId(res.user);
     initializeSocket(res.user);
 
@@ -92,6 +120,7 @@ const SignupForm = ({ isLoading, setIsLoading }) => {
     const { data: usersData } = await getUsers();
 
     console.log(userData);
+    console.log(usersData);
     setUser(userData.user);
     setUsers(usersData.users);
     setManagementAction(false);

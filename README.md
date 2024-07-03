@@ -1,1 +1,1 @@
-# Whisper chatAPP
+# Whisper chatAPP:connecting conversations in real time

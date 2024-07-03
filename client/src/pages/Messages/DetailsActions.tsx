@@ -25,14 +25,14 @@ const DetailsActions = () => {
       <Button>Block User</Button>
       <Button>Add User</Button>
       <Button>Remove User</Button>
+      {/* <Button>Remove User</Button>
       <Button>Remove User</Button>
       <Button>Remove User</Button>
       <Button>Remove User</Button>
       <Button>Remove User</Button>
       <Button>Remove User</Button>
       <Button>Remove User</Button>
-      <Button>Remove User</Button>
-      <Button>Remove User</Button>
+      <Button>Remove User</Button> */}
     </Actions>
   );
 };

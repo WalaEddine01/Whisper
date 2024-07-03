@@ -49,7 +49,7 @@ class AuthController {
       const { name, email, password, username } = request.body;
       const newUser = await User.create({ name, email, password, username });
       const token = createToken(newUser._id);
-      response.cookie('jwt', token, { httpOnly: true, maxAge: exDate * 1000 });
+      response.cookie('jwt', token, { maxAge: exDate * 1000 });
       response.status(201).json({ user: newUser._id });
     } catch (err) {
       const errorJson = ErrorHandler(err);
@@ -78,7 +78,7 @@ class AuthController {
       console.log(user.email);
       console.log(user.password);
       const token = createToken(user._id);
-      response.cookie('jwt', token, { httpOnly: true, maxAge: exDate * 1000 });
+      response.cookie('jwt', token, { maxAge: exDate * 1000 });
       response.status(201).json({ user: user._id });
     } catch (err) {
       const errorJson = ErrorHandler(err);

@@ -23,6 +23,17 @@ const Name = styled.h2`
   font-weight: 600;
 `;
 
+const NameDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+`;
+
+const UserName = styled.span`
+  font-size: 13px;
+  color: var(--mainTextColorLight);
+`;
+
 const User = () => {
   const isSmall = useAppStore((state) => state.isSmall);
   const user = useAppStore((state) => state.user);
@@ -30,9 +41,21 @@ const User = () => {
   return (
     <UserDiv isSmall={isSmall}>
       <Image>
-        <img src={user.imgURL} alt="" />
+        <img
+          src={`http://localhost:5000/${
+            user.imgPath.startsWith('/')
+              ? user.imgPath.slice(1)
+              : user.imgPath.startsWith('.')
+              ? user.imgPath.slice(2)
+              : user.imgPath
+          }`}
+          alt=""
+        />
       </Image>
-      <Name>{user.username}</Name>
+      <NameDiv>
+        <Name>{user.name}</Name>
+        <UserName>@{user.username}</UserName>
+      </NameDiv>
     </UserDiv>
   );
 };
