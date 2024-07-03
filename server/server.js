@@ -48,8 +48,7 @@ io.on('connection', (socket) => {
   socket.on('joinChatRoom', (chatRoomId) => {
     socket.join(chatRoomId);
     console.log(`User ${socket.id} joined chat room ${chatRoomId}`);
-
-
+    io.emit('RoomCreated', chatRoomId);
   });
 
   socket.on('sendMessage', (messageData) => {

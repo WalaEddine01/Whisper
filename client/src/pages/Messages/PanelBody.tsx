@@ -306,6 +306,7 @@ const PanelBody = () => {
     setManagementMode(false);
     setManagementAction(false);
     updateSelectedChat(response.data.createChatRoom.id);
+    socket.emit('joinChatRoom', response.data.createChatRoom.id);
   }
 
   useEffect(() => {

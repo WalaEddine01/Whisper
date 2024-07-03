@@ -4,6 +4,9 @@ import { arrayToHashMap } from '../../utils/utils';
 import styled from 'styled-components';
 import useAppStore from '../../Store';
 import { useEffect } from 'react';
+import { useLazyQuery } from '@apollo/client';
+import { GET_CURRENT_USER } from '../../GraphQl/queries';
+import { socket } from '../../utils/socket';
 
 const ChatsListStyled = styled.ul`
   display: flex;
@@ -36,7 +39,24 @@ const ChatsList = ({ searchQuery }) => {
   const user = useAppStore((state) => state.user);
   const isSmall = useAppStore((state) => state.isSmall);
 
+  const setUser = useAppStore((state) => state.setUser);
+
   console.log(user);
+  //
+  const [getUser] = useLazyQuery(GET_CURRENT_USER, {
+    fetchPolicy: 'no-cache',
+  });
+
+  socket.on("RoomCreated", async () => {
+    const { data: userNewData } = await getUser({
+      variables: { id: userId },
+    });
+    console.log('Room Created');
+    
+    setUser(userNewData.user);
+  });
+  //
+
 
   const directChats = user.chatRooms.filter(
     (chatRoom) => chatRoom.type === 'one-to-one',
