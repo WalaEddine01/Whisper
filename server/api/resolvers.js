@@ -102,21 +102,29 @@ const resolvers = {
   Mutation: {
     createChatRoom: async (_, { name, type, userIds }) => {
       const users = await User.find({ _id: { $in: userIds } });
+      
       if (type === 'one-to-one' && users.length !== 2) {
         throw new Error('One-to-one chat rooms must have exactly two users');
       }
+      
+      if (type === 'group' && !name) {
+        throw new Error('Group chat rooms must have a name');
+      }
+      
       const chatRoom = new ChatRoom({
-        name,
+        name: type === 'one-to-one' ? undefined : name,
         type,
         users,
         createdAt: new Date().toISOString(),
       });
+      
       await chatRoom.save();
+      
       return {
         ...chatRoom._doc,
         id: chatRoom._id.toString(),
       };
-    },
+    },    
     createMessage: async (_, { senderId, content, chatRoomId }) => {
       const message = new Message({
         sender: senderId,

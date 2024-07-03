@@ -268,6 +268,9 @@ const PanelBody = () => {
     );
 
     socket.emit('joinChatRoom', response.data.createChatRoom.id);
+
+    
+
     // setSelectedChatMessages([]);
     // addChat(
     //   selectedChat.users.map((user) => user.id),

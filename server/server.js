@@ -12,7 +12,7 @@ const cors = require('cors');
 const app = express();
 app.use(
   cors({
-    origin: 'http://localhost:8000',
+    origin: '*',
     credentials: true,
   }),
 );
@@ -48,6 +48,8 @@ io.on('connection', (socket) => {
   socket.on('joinChatRoom', (chatRoomId) => {
     socket.join(chatRoomId);
     console.log(`User ${socket.id} joined chat room ${chatRoomId}`);
+
+
   });
 
   socket.on('sendMessage', (messageData) => {

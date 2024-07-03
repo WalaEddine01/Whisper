@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const chatRoomSchema = new mongoose.Schema(
   {
-    name: { type: String , default: 'Group Chat' },
+    name: { type: String, default: null },
     type: { type: String, enum: ['one-to-one', 'group'], required: true },
     users: [
       { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
@@ -12,6 +12,7 @@ const chatRoomSchema = new mongoose.Schema(
   },
   { collection: 'chatRooms' },
 );
+
 const ChatRoom = mongoose.model('ChatRoom', chatRoomSchema);
 
 export { ChatRoom, chatRoomSchema };
