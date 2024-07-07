@@ -6,11 +6,10 @@
 <div align="center">
   <h1>Whisper</h1>
   <h4>Real-Time Chat Application</h4>
-  <a href="https://github.com/WalaEddine01">GitHub</a>
-  ·
-  <a href="https://twitter.com/w1laaeddine">X (Twitter)</a>
   ·
   <a href="https://www.linkedin.com/in/wala-eddine-boulebbina">LinkedIn</a>
+
+  <-- add it here
 </div>
 <div align="center">
   
