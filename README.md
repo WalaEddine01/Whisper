@@ -85,3 +85,32 @@ You can start using Whisper by following these steps:
 ```sh
 git clone https://github.com/WalaEddine01/Whisper.git
 cd Whisper
+```
+### Set Up the Backend
+
+1. **Install Dependencies:**
+    ```sh
+    cd server
+    npm install
+    ```
+
+2. **Configure Environment Variables:**
+    - Create a `.env` file in the `server` directory and add your MongoDB URI and JWT secret.
+
+3. **Run the Server:**
+    ```sh
+    npm run start-server
+    ```
+
+### Set Up the Frontend
+
+1. **Install Dependencies:**
+    ```sh
+    cd ../client
+    npm install
+    ```
+
+2. **Run the Application:**
+    ```sh
+    npm run dev
+    ```
