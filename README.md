@@ -9,7 +9,6 @@
   ·
   <a href="https://www.linkedin.com/in/wala-eddine-boulebbina">LinkedIn</a>
 
-  <-- add it here
 </div>
 <div align="center">
   
