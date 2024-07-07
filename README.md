@@ -1,6 +1,6 @@
+![Capture](https://github.com/WalaEddine01/OrgSchool-portfolio-project/assets/135642375/17c5e399-c3f2-48c9-bb97-ee698ede39ff)
 <h1 align="center">
   <a href="https://github.com/WalaEddine01/Whisper">
-    ![Capture](https://github.com/WalaEddine01/OrgSchool-portfolio-project/assets/135642375/17c5e399-c3f2-48c9-bb97-ee698ede39ff)
   </a>
 </h1>
 <div align="center">
