@@ -1,6 +1,6 @@
 <h1 align="center">
   <a href="https://github.com/WalaEddine01/Whisper">
-    <img src="https://drive.google.com/file/d/14YXnzcva__-AGLnbLbrKTzWqrwdYsDnY/view?usp=drive_link" alt="Whisper Logo" width="100px">
+    <img src="https://lh3.google.com/u/0/d/14YXnzcva__-AGLnbLbrKTzWqrwdYsDnY=w1366-h649-iv1" alt="Whisper Logo" width="100px">
   </a>
 </h1>
 <div align="center">
