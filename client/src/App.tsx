@@ -4,23 +4,20 @@ import {
   Navigate,
   RouterProvider,
   createBrowserRouter,
-  useLocation,
 } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material';
-import { useEffect, useState } from 'react';
 
 import About from './pages/About/About';
 import { ApolloProvider } from '@apollo/client';
-import ErrorPage from './pages/ErrorPage';
+import ErrorPage from './pages/Error/ErrorPage';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import Logout from './pages/Logout/Logout';
 import Messages from './pages/Messages/Messages';
-import ProtectedPages from './pages/ProtectedPages';
-import Root from './pages/Root';
+import ProtectedPages from './pages/Root/ProtectedPages';
+import Root from './pages/Root/Root';
 import Signup from './pages/Signup/Signup';
 import { client } from './graphqlClient';
-import useAppStore from './Store';
 
 const router = createBrowserRouter([
   {

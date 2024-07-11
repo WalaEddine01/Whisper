@@ -13,6 +13,7 @@ const app = express();
 app.use(
   cors({
     origin: 'http://localhost:8000',
+    // origin: 'http://192.168.56.1:8000',
     credentials: true,
   }),
 );
@@ -47,6 +48,11 @@ const io = require('socket.io')(server2, {
 io.on('connection', (socket) => {
   console.log(`A user with socket ID: ${socket.id}`);
 
+  socket.on('newUser', () => {
+    io.emit('newUser');
+    console.log('New user connected');
+  });
+
   socket.on('joinChatRoom', (chatRoomId) => {
     socket.join(chatRoomId);
     console.log(`User ${socket.id} joined chat room ${chatRoomId}`);
@@ -57,6 +63,14 @@ io.on('connection', (socket) => {
     const { chatRoomId, message } = messageData;
     socket.to(chatRoomId).emit('receiveMessage', message);
     console.log(`Message sent to chat room ${chatRoomId}:`, message);
+  });
+
+  socket.on('typing', (chatRoomId, username) => {
+    socket.to(chatRoomId).emit('userTyping', username);
+  });
+
+  socket.on('stoppedTyping', (chatRoomId, username) => {
+    socket.to(chatRoomId).emit('userStoppedTyping', username);
   });
 
   socket.on('disconnect', () => {

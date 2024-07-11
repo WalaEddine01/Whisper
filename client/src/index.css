@@ -189,6 +189,7 @@ button,
 [type='button'],
 [type='reset'],
 [type='submit'] {
+  appearance: button;
   -webkit-appearance: button; /* 1 */
   background-color: transparent; /* 2 */
   background-image: none; /* 2 */
@@ -233,6 +234,7 @@ Correct the cursor style of increment and decrement buttons in Safari.
 */
 
 [type='search'] {
+  appearance: textfield;
   -webkit-appearance: textfield; /* 1 */
   outline-offset: -2px; /* 2 */
 }
@@ -352,7 +354,7 @@ iframe,
 embed,
 object {
   display: block; /* 1 */
-  vertical-align: middle; /* 2 */
+  /* vertical-align: middle; 2 */
 }
 
 /*
@@ -399,5 +401,18 @@ input[type='submit'] {
 
 *::-webkit-scrollbar-thumb:hover {
   background-color: var(--secondaryColor);
+}
+
+::-webkit-input-placeholder,
+::-moz-placeholder {
+  color: var(--mainTextColorLight); /* Placeholder text color */
+}
+
+:-ms-input-placeholder {
+  color: var(--mainTextColorLight); /* Placeholder text color */
+}
+
+:-moz-placeholder {
+  color: var(--mainTextColorLight); /* Placeholder text color */
 }
 

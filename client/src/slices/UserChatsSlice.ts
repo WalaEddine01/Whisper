@@ -1,4 +1,8 @@
-const createUserChatsSlice = (set, get) => ({
+import { ChatRoom, ChatSliceTypes } from './Slices.types';
+
+import { StateCreator } from 'zustand';
+
+const createUserChatsSlice: StateCreator<ChatSliceTypes> = (set) => ({
   selectedChat: null,
   selectedChatType: null,
   selectedChatMode: null,
@@ -7,6 +11,7 @@ const createUserChatsSlice = (set, get) => ({
   selectedDetails: null,
   managementMode: false,
   managementAction: null,
+  isLoadingToken: true,
   setManagementAction: (value) => set(() => ({ managementAction: value })),
   setManagementMode: (value) => set(() => ({ managementMode: value })),
   setSelectedChatMode: (mode) => set(() => ({ selectedChatMode: mode })),
@@ -15,9 +20,13 @@ const createUserChatsSlice = (set, get) => ({
   setSelectedChatType: (type) => set(() => ({ selectedChatType: type })),
   setSelectedTabType: (type) => set(() => ({ selectedTabType: type })),
   setSelectedChat: (chat) => set(() => ({ selectedChat: chat })),
+  setIsLoadingToken: (value) => set(() => ({ isLoadingToken: value })),
   updateSelectedChat: (roomId) =>
     set((state) => ({
-      selectedChat: state.user.chatRooms.find((room) => room.id === roomId),
+      // @ts-expect-error IDK
+      selectedChat: state.user.chatRooms.find(
+        (room: ChatRoom) => room.id === roomId,
+      ),
     })),
 });
 

@@ -1,110 +1,59 @@
-import { Error, FormElement, Input, InputDiv, Submit } from './Form';
-import { GET_CURRENT_USER, GET_USERS } from '../../GraphQl/queries';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Error, FormElement, Input, InputDiv, Submit } from './Form.styles';
+import { FormProps, LoginDataProps } from './Form.types';
 
+import { FC } from 'react';
+import { SignUser } from '../../utils/UserEntry';
 import { Skeleton } from '@mui/material';
-import axiosInstance from '../../AxiosInstance';
-import { client } from '../../graphqlClient';
+import { logIn } from '../../utils/requests';
 import toast from 'react-hot-toast';
-import useAppStore from '../../Store';
-import { useEffect } from 'react';
+import useApplicationStore from '../../Hooks/useApplicationStore';
 import { useForm } from 'react-hook-form';
-import { useQuery } from '@apollo/client';
+import { useNavigate } from 'react-router-dom';
+import useRequest from '../../Hooks/useRequest';
 
-import { initializeSocket } from '../../utils/socket';
-
-const LoginForm = ({ isLoading, setIsLoading }) => {
+const LoginForm: FC<FormProps> = ({ isLoading, setIsLoading }) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+    setError,
+  } = useForm<LoginDataProps>();
+
+  const {
+    setUserId,
+    setUser,
+    setUsers,
+    setManagementAction,
+    setManagementMode,
+    setSelectedChatMode,
+    setSelectedModeType,
+    setSelectedDetails,
+    setSelectedChatType,
+    setSelectedTabType,
+    setSelectedChat,
+  } = useApplicationStore();
+
+  const { getUser, getUsers } = useRequest();
   const navigate = useNavigate();
-  const setUserId = useAppStore((state) => state.setUserId);
-  const userId = useAppStore((state) => state.userId);
-  const setUser = useAppStore((state) => state.setUser);
-  const setUsers = useAppStore((state) => state.setUsers);
-  const location = useLocation();
-  const shouldRedirect = location.pathname === '/login';
-  const user = useAppStore((state) => state.user);
 
-  const setManagementAction = useAppStore((state) => state.setManagementAction);
-  const setManagementMode = useAppStore((state) => state.setManagementMode);
-  const setSelectedChatMode = useAppStore((state) => state.setSelectedChatMode);
-  const setSelectedModeType = useAppStore((state) => state.setSelectedModeType);
-  const setSelectedDetails = useAppStore((state) => state.setSelectedDetails);
-  const setSelectedChatType = useAppStore((state) => state.setSelectedChatType);
-  const setSelectedTabType = useAppStore((state) => state.setSelectedTabType);
-  const setSelectedChat = useAppStore((state) => state.setSelectedChat);
-
-  const {
-    loading: usersLoading,
-    error: usersError,
-    data: usersData,
-  } = useQuery(GET_USERS);
-  const {
-    loading: userLoading,
-    error: userError,
-    data: userData,
-    refetch,
-  } = useQuery(GET_CURRENT_USER, {
-    variables: { id: userId },
-  });
-
-  useEffect(() => {
-    if (user) {
-      toast.success('Logged In Successfully!');
-      navigate('/messages');
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (userData && shouldRedirect) {
-      setUser(userData.user);
-    }
-  }, [userData]);
-
-  async function onSubmit(data) {
-    try {
-      let res = await logIn(data);
-      console.log(res);
-      setUserId(res.user);
-      initializeSocket(res.user);
-      setUsers(usersData.users);
-      setManagementAction(false);
-      setManagementMode(false);
-      setSelectedChatMode(null);
-      setSelectedModeType('yours');
-      setSelectedDetails(null);
-      setSelectedChatType(null);
-      setSelectedTabType('direct');
-      setSelectedChat(null);
-      refetch();
-    } catch (error) {
-      toast.error('Login failed!');
-      console.error(error);
-    }
+  async function onSubmit(data: LoginDataProps) {
+    await logIn(data, setIsLoading, setError);
+    await SignUser(getUser, getUsers, {
+      setUser,
+      setUserId,
+      setUsers,
+      setManagementAction,
+      setManagementMode,
+      setSelectedChatMode,
+      setSelectedModeType,
+      setSelectedDetails,
+      setSelectedChatType,
+      setSelectedTabType,
+      setSelectedChat,
+    });
+    navigate('/messages');
+    toast.success('logged in successfully');
   }
-
-  async function logIn(data) {
-    setIsLoading(true);
-    try {
-      const response = await axiosInstance.post('/login', data, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      setIsLoading(false);
-      return response.data;
-    } catch (error) {
-      setIsLoading(false);
-      console.error('Error making POST request:', error);
-      throw error;
-    }
-  }
-
-  // if (usersLoading || userLoading) return <p>Loading...</p>;
-  // if (usersError || userError) return <p>Error loading data</p>;
 
   return (
     <FormElement onSubmit={handleSubmit(onSubmit)}>
@@ -112,7 +61,6 @@ const LoginForm = ({ isLoading, setIsLoading }) => {
         {!isLoading && (
           <Input
             type="text"
-            name="email"
             placeholder="Email"
             {...register('email', {
               required: { value: true, message: 'Email is required' },
@@ -127,7 +75,6 @@ const LoginForm = ({ isLoading, setIsLoading }) => {
         {!isLoading && (
           <Input
             type="password"
-            name="password"
             placeholder="Password"
             {...register('password', {
               required: { value: true, message: 'Password is required' },
@@ -140,12 +87,7 @@ const LoginForm = ({ isLoading, setIsLoading }) => {
       </InputDiv>
       <InputDiv>
         {!isLoading && (
-          <Submit
-            type="submit"
-            value="Login"
-            name="Login"
-            disabled={isLoading}
-          />
+          <Submit type="submit" value="Login" disabled={isLoading} />
         )}
         {isLoading && (
           <Skeleton variant="rectangular" height={64} width={160} />

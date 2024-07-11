@@ -1,140 +1,91 @@
-import { Error, FormElement, Image, Input, InputDiv, Submit } from './Form';
-import { GET_CURRENT_USER, GET_USERS } from '../../GraphQl/queries';
+import { ChangeEvent, FC, useState } from 'react';
+import {
+  Error,
+  FormElement,
+  Image,
+  Input,
+  InputDiv,
+  Submit,
+} from './Form.styles';
+import { FormProps, SignupDataProps } from './Form.types';
+import { sendImage, signUp } from '../../utils/requests';
 
+import { SignUser } from '../../utils/UserEntry';
 import { Skeleton } from '@mui/material';
-import axios from 'axios';
-import axiosInstance from '../../AxiosInstance';
-import { initializeSocket } from '../../utils/socket';
+import { socket } from '../../utils/socket';
 import toast from 'react-hot-toast';
-import useAppStore from '../../Store';
+import useApplicationStore from '../../Hooks/useApplicationStore';
 import { useForm } from 'react-hook-form';
-import { useLazyQuery } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import useRequest from '../../Hooks/useRequest';
 
-const SignupForm = ({ isLoading, setIsLoading }) => {
+const SignupForm: FC<FormProps> = ({ isLoading, setIsLoading }) => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
-  } = useForm();
-  const [getUser] = useLazyQuery(GET_CURRENT_USER, {
-    fetchPolicy: 'no-cache',
-  });
-  const [getUsers] = useLazyQuery(GET_USERS, {
-    fetchPolicy: 'no-cache',
-  });
+    setError,
+  } = useForm<SignupDataProps>();
 
+  const { getUser, getUsers } = useRequest();
+  const [imageSrc, setImageSrc] = useState<string>('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const {
+    setUser,
+    setUserId,
+    setUsers,
+    setManagementAction,
+    setManagementMode,
+    setSelectedChatMode,
+    setSelectedModeType,
+    setSelectedDetails,
+    setSelectedChatType,
+    setSelectedTabType,
+    setSelectedChat,
+  } = useApplicationStore();
   const navigate = useNavigate();
-  const [imageSrc, setImageSrc] = useState('');
-  const [selectedFile, setSelectedFile] = useState(null);
-  const setUser = useAppStore((state) => state.setUser);
-  const setUserId = useAppStore((state) => state.setUserId);
-  const setUsers = useAppStore((state) => state.setUsers);
-  const setManagementAction = useAppStore((state) => state.setManagementAction);
-  const setManagementMode = useAppStore((state) => state.setManagementMode);
-  const setSelectedChatMode = useAppStore((state) => state.setSelectedChatMode);
-  const setSelectedModeType = useAppStore((state) => state.setSelectedModeType);
-  const setSelectedDetails = useAppStore((state) => state.setSelectedDetails);
-  const setSelectedChatType = useAppStore((state) => state.setSelectedChatType);
-  const setSelectedTabType = useAppStore((state) => state.setSelectedTabType);
-  const setSelectedChat = useAppStore((state) => state.setSelectedChat);
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (file) {
       setSelectedFile(file);
       setIsLoading(true);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImageSrc(reader.result);
+        const result = reader.result;
+        if (typeof result === 'string') {
+          setImageSrc(result);
+        } else {
+          console.error('File reading error: result is not a string');
+        }
         setIsLoading(false);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  async function signUp(data) {
-    console.log(data);
-    setIsLoading(true);
-    try {
-      // Make POST request using Axios
-      const response = await axiosInstance.post(
-        '/signup',
-        { ...data, imgURL: imageSrc },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            // Add any other headers as needed
-          },
-        },
-      );
+  async function onSubmit(data: SignupDataProps) {
+    await signUp(data, imageSrc, setIsLoading, setError);
+    await sendImage(imageSrc, selectedFile);
 
-      // Return the response data
-      return response.data;
-    } catch (error) {
-      // Handle errors
-      console.error('Error making POST request:', error);
-      throw error; // Optional: rethrow or handle differently
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  async function sendImage() {
-    if (imageSrc) {
-      try {
-        const formData = new FormData();
-        formData.append('photo', selectedFile);
-
-        const response = await axiosInstance.post('/upload', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-
-        console.log('File uploaded successfully:', response.data);
-        // Handle success, e.g., show a success message or update state
-      } catch (error) {
-        console.error('Error uploading file:', error);
-        // Handle error, e.g., show an error message to the user
-      }
-    }
-  }
-
-  async function onSubmit(data) {
-    const res = await signUp(data);
-    const res2 = await sendImage();
-
-    console.log(res);
-    console.log(res2);
-
-    setUserId(res.user);
-    initializeSocket(res.user);
-
-    const { data: userData } = await getUser({
-      variables: { id: res.user },
+    await SignUser(getUser, getUsers, {
+      setUser,
+      setUserId,
+      setUsers,
+      setManagementAction,
+      setManagementMode,
+      setSelectedChatMode,
+      setSelectedModeType,
+      setSelectedDetails,
+      setSelectedChatType,
+      setSelectedTabType,
+      setSelectedChat,
     });
 
-    const { data: usersData } = await getUsers();
-
-    console.log(userData);
-    console.log(usersData);
-    setUser(userData.user);
-    setUsers(usersData.users);
-    setManagementAction(false);
-    setManagementMode(false);
-    setSelectedChatMode(null);
-    setSelectedModeType('yours');
-    setSelectedDetails(null);
-    setSelectedChatType(null);
-    setSelectedTabType('direct');
-    setSelectedChat(null);
-
-    toast.success('Account Created Successfully!');
+    socket.emit('newUser');
     navigate('/messages');
-    console.log(res);
+    toast.success('Account Created Successfully!');
   }
 
   return (
@@ -143,7 +94,6 @@ const SignupForm = ({ isLoading, setIsLoading }) => {
         {!isLoading && (
           <Input
             type="text"
-            name="name"
             placeholder="Name"
             {...register('name', {
               required: {
@@ -160,7 +110,6 @@ const SignupForm = ({ isLoading, setIsLoading }) => {
         {!isLoading && (
           <Input
             type="text"
-            name="username"
             placeholder="Username"
             {...register('username', {
               required: {
@@ -177,7 +126,6 @@ const SignupForm = ({ isLoading, setIsLoading }) => {
         {!isLoading && (
           <Input
             type="text"
-            name="email"
             placeholder="Email"
             {...register('email', {
               required: {
@@ -194,7 +142,6 @@ const SignupForm = ({ isLoading, setIsLoading }) => {
         {!isLoading && (
           <Input
             type="password"
-            name="password"
             placeholder="Password"
             {...register('password', {
               required: {

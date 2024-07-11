@@ -1,65 +1,16 @@
-import { useEffect, useState } from 'react';
+import { FC, useState } from 'react';
+import { MenuButton, StyledNavLink, UlStyled } from './Navbar.styles';
 
-import { NavLink } from 'react-router-dom';
-import styled from 'styled-components';
-import useAppStore from '../../Store';
+import { NavbarProps } from './Navbar.types';
+import useApplicationStore from '../../Hooks/useApplicationStore';
 
-interface UlStyledProps {
-  isSmall: boolean; // Define isSmall as an optional boolean prop
-  isOpen: boolean; // Define isOpen as an optional boolean prop
-  show: boolean;
-}
-
-interface NavMenuProps {
-  isSmall: boolean; // Define isSmall as an optional boolean prop
-}
-
-const UlStyled = styled.ul<UlStyledProps>`
-  display: ${(props) => (props.isSmall && !props.isOpen ? 'none' : 'flex')};
-  list-style: none;
-  gap: var(--space-md);
-  background-color: ${(props) =>
-    props.isSmall ? 'var(--secondaryColor)' : ''};
-  padding: ${(props) => (props.isSmall ? '20px 30px' : '')};
-  position: ${(props) => (props.isSmall ? 'absolute' : '')};
-  left: ${(props) => (props.isSmall ? '0px' : '')};
-  top: ${(props) =>
-    props.isSmall
-      ? props.show
-        ? 'var(--navHeight)'
-        : 'var(--navHeight)'
-      : ''};
-  flex-direction: ${(props) => (props.isSmall ? 'column' : '')};
-  width: ${(props) => (props.isSmall ? '100%' : '')};
-`;
-
-const StyledNavLink = styled(NavLink)<NavMenuProps>`
-  text-decoration: none;
-  color: var(--mainTextColor);
-  padding: 8px 16px;
-
-  &.active {
-    font-weight: 600;
-    border-left: ${(props) =>
-      props.isSmall ? 'var(--navBorderSize) solid var(--mainColor)' : ''};
-    border-bottom: ${(props) =>
-      props.isSmall ? '' : 'var(--navBorderSize) solid var(--secondaryColor)'};
-  }
-`;
-
-const MenuButton = styled.button<NavMenuProps>`
-  display: ${(props) => (props.isSmall ? 'flex' : 'none')};
-`;
-
-const Links = ({ show }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const Links: FC<NavbarProps> = ({ show = false }) => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { isSmall, userId } = useApplicationStore();
 
   const handleClick = () => {
     setIsOpen(!isOpen);
   };
-
-  const isSmall = useAppStore((state) => state.isSmall);
-  const userId = useAppStore((state) => state.userId);
 
   return (
     <>

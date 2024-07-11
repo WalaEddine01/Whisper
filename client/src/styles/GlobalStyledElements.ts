@@ -1,6 +1,7 @@
+import { ContainerProps } from './GlobalStyledElements.types';
 import styled from 'styled-components';
 
-export const Container = styled.div`
+export const Container = styled.div<ContainerProps>`
   margin: 0 auto; /* Center align the container */
   padding: ${(props) =>
     props.messages ? '0 0' : '0 1rem'}; /* Padding on the sides */

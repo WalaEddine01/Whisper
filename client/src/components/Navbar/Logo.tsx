@@ -1,23 +1,11 @@
-import { NavLink } from 'react-router-dom';
-import React from 'react';
-import styled from 'styled-components';
-
-const H1 = styled.h1`
-  font-size: 2em;
-  text-align: center;
-  color: var() --mainText;
-  font-weight: bold;
-
-  @media (max-width: 320px) {
-    font-size: 12vw;
-  }
-`;
+import { Link } from 'react-router-dom';
+import { LogoText } from './Navbar.styles';
 
 const Logo = () => {
   return (
-    <H1>
-      <NavLink to={'/'}>Whisper</NavLink>
-    </H1>
+    <LogoText>
+      <Link to={'/'}>Whisper</Link>
+    </LogoText>
   );
 };
 

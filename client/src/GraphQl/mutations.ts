@@ -4,6 +4,7 @@ export const CREATE_CHAT_ROOM = gql`
   mutation createChatRoom($name: String!, $type: String!, $userIds: [ID!]!) {
     createChatRoom(name: $name, type: $type, userIds: $userIds) {
       type
+      id
       name
       users {
         id

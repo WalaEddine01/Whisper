@@ -1,4 +1,7 @@
-const BackButton = ({ onClick, color }) => {
+import { BackButtonProps } from './BackButton.types';
+import { FC } from 'react';
+
+const BackButton: FC<BackButtonProps> = ({ onClick, color }) => {
   return (
     <button onClick={onClick}>
       <svg

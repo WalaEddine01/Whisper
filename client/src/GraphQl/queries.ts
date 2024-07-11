@@ -48,6 +48,9 @@ export const GET_CURRENT_USER = gql`
           createdAt
           sender {
             id
+            name
+            username
+            imgPath
           }
         }
       }

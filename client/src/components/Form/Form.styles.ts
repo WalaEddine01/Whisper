@@ -1,0 +1,111 @@
+import { NavLink } from 'react-router-dom';
+import styled from 'styled-components';
+
+export const FormElement = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+`;
+
+export const Error = styled.p`
+  color: var(--errorColor);
+  margin-top: 4px;
+`;
+
+export const Submit = styled.input`
+  height: 48px;
+  border-radius: 4px;
+  padding: 12px 24px;
+  outline: none;
+  background-color: var(--secondaryColor);
+  color: var(--mainTextColor);
+`;
+
+export const Input = styled.input`
+  width: 100%;
+  height: 48px;
+  border-radius: 4px;
+  padding: 12px 24px;
+  outline: none;
+  background-color: var(--inputColor);
+  color: var(--mainTextColor);
+
+  &:focus {
+    box-shadow: 0px 0px 10px 0px #00000044;
+  }
+
+  &::placeholder {
+    color: var(--mainTextColorLight); /* Placeholder text color */
+    font-style: italic; /* Placeholder text style */
+  }
+`;
+
+export const InputDiv = styled.div``;
+
+export const Image = styled.div`
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: var(--mainColor);
+  color: var(--secondaryColor);
+  border: 2px solid var(--secondaryColor);
+  font-size: 24px;
+  overflow: hidden;
+  opacity: 0.5;
+  transition: 0.5s;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    opacity: 1;
+  }
+`;
+
+export const ImageLabel = styled.label``;
+
+export const SignDiv = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  min-height: calc(100vh - var(--navHeight));
+`;
+
+export const FormHeading = styled.h2`
+  font-size: 32px;
+  color: var(--mainTextColor);
+  font-weight: bold;
+`;
+
+export const FormSecondaryText = styled.p`
+  font-size: 16px;
+  color: var(--mainTextColor);
+  margin-top: 4px;
+`;
+
+export const FormDivText = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+  flex-grow: 1;
+`;
+
+export const SVG = styled.div`
+  flex-basis: 40%;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+
+  svg {
+    width: 100%;
+  }
+`;
+
+export const NavLinkStyled = styled(NavLink)`
+  color: var(--mainTextColorLight);
+  margin-left: 8px;
+`;
+

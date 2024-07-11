@@ -41,7 +41,12 @@ const ErrorHandler = (err) => {
 };
 const exDate = 10000;
 const createToken = (id) =>
-  jwt.sign({ id }, 'a secret to change later', { expiresIn: exDate });
+  jwt.sign({ id }, 'a secret to change later', {
+    expiresIn: exDate,
+    // sameSite: 'None',
+    // secure: true,
+    // httpOnly: true,
+  });
 
 class AuthController {
   static async signupPost(request, response) {
